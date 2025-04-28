@@ -9,3 +9,5 @@ User prompts will be :
 ## Events
 ![Flow](../images/prompt-flow.jpg)
 
+For requst / Response please see the Bruno Collection for the APIs.
+
