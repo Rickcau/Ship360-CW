@@ -7,5 +7,5 @@ User prompts will be :
 - "Generate a shipping label with the fastest delivery time under $15 for this order #2433232."
 
 ## Events
-![Flow](.\images\prompt-flow.jpg)
+![Flow](..\images\prompt-flow.jpg)
 
