@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "Debug Semantic Kernel Agent",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/agents/semantickernel/__main__.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+            },
+            "args": [
+                "--host", "localhost",
+                "--port", "10000"
+            ]
+        },
+        {
+            "name": "Debug Semantic Kernel Agent (UV)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uv.run",
+            "cwd": "${workspaceFolder}/agents/semantickernel",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "args": [
+                "."
+            ]
+        },
+        {
+            "name": "Debug FastAPI Application",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app.main:app",
+                "--reload"
+            ],
+            "cwd": "${workspaceFolder}/ship360-chat-api",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}
