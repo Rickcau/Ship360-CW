@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, AsyncIterator
+from typing import Optional, Dict, Any, AsyncIterator, List
+from fastapi.params import Path
 import json
 import logging
 from app.services.azure_openai import OpenAIService
 from app.utils.helpers import format_response, format_error
+from app.services.orders import OrderService
 
 router = APIRouter(tags=["Chat"])
 
@@ -58,7 +60,8 @@ async def stream_chat_response(
 @router.post("/chat")
 async def process_chat(
     request: ChatRequest,
-    openai_service: OpenAIService = Depends(OpenAIService)
+    openai_service: OpenAIService = Depends(OpenAIService),
+    order_service: OrderService = Depends(OrderService)
 ):
     """
     Process a chat request using Semantic Kernel Agents.
@@ -106,4 +109,29 @@ async def process_chat_sync(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Chat processing error: {str(e)}"
+        )
+
+@router.get("/orders/{order_number}", response_model=Dict[str, Any])
+async def get_order_by_number(
+    order_number: str = Path(..., description="Order number to retrieve"),
+    order_service: OrderService = Depends(OrderService)
+):
+    """
+    Test endpoint to retrieve a specific order by order number.
+    """
+    try:
+        order = order_service.get_order(order_number)
+        if not order:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Order with number {order_number} not found"
+            )
+        return order
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error retrieving order {order_number}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving order: {str(e)}"
         )
