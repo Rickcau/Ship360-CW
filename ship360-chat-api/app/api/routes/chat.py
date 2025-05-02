@@ -113,7 +113,7 @@ async def process_chat_sync(
 
 @router.get("/orders/{order_number}", response_model=Dict[str, Any])
 async def get_order_by_number(
-    order_number: str = Path(..., description="Order number to retrieve"),
+    order_number: str,
     order_service: OrderService = Depends(OrderService)
 ):
     """
