@@ -1,0 +1,908 @@
+{
+	"info": {
+		"_postman_id": "cf5483e4-01f5-47fd-b820-d7984737a776",
+		"name": "Shipping APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "623840",
+		"_collection_link": "https://crimson-resonance-5032.postman.co/workspace/Test_Naveen~f4e4d98d-8296-44f2-ae44-86637992850c/collection/623840-cf5483e4-01f5-47fd-b820-d7984737a776?action=share&source=collection_link&creator=623840"
+	},
+	"item": [
+		{
+			"name": "TOKEN SP360",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Rcjy4L3JLvTcC1WqgTOHK7V7tixTpe4Q_OBS65F3CHo6EYO_00GBsrGxUcdcIr0Z",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "0oa29mvy8yurCh8oo0h8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api-dev.sendpro360.pitneycloud.com/auth/api/v1/token",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"sendpro360",
+						"pitneycloud",
+						"com"
+					],
+					"path": [
+						"auth",
+						"api",
+						"v1",
+						"token"
+					]
+				},
+				"description": "Generated from cURL: curl --location --request POST '\nhttps://api-dev.sendpro360.pitneycloud.com/auth/api/v1/token'"
+			},
+			"response": [
+				{
+					"name": "DEV TOKEN SP360",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://api-dev.sendpro360.pitneycloud.com/auth/api/v1/token",
+							"protocol": "https",
+							"host": [
+								"api-dev",
+								"sendpro360",
+								"pitneycloud",
+								"com"
+							],
+							"path": [
+								"auth",
+								"api",
+								"v1",
+								"token"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 12 Nov 2024 04:00:17 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1421"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "73f2af44-ca12-4d19-82b5-d23271559a4b"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "BHXggGoyoAMFyAw="
+						},
+						{
+							"key": "X-Amzn-Trace-Id",
+							"value": "Root=1-6732d2cf-42c1e4ef55a433e44b1ee8e1"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"token_type\": \"Bearer\",\n    \"expires_in\": 14400,\n    \"access_token\": \"eyJraWQiOiJKZTBEbUZzTUg5Y1YxQnkxcGI3QTdMT0pXX3NiN19aQ0JGQ0Y0WGRTWFgwIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlN4V1R4OC1sS1RKMy1tcE5XcDdvSUFTQlpHRDN0QjVWNERXd1diRE0xVjgiLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtTkJEbHZYZ2pLOFktREVWIiwiaWF0IjoxNzMxMzg0MDE3LCJleHAiOjE3MzEzOTg0MTcsImNpZCI6IjBvYTF4OWRqc3d2SGNlSU94MGg4Iiwic2NwIjpbInBzYXBpIl0sInN2Y1ZlciI6IjMuMCIsImNsYWltX3BzYXBpIjp7ImVudElEIjoiTzN5Qjk5bXBwQTIiLCJ1aWQiOiIwb2ExeDlkanN3dkhjZUlPeDBoOCIsInN1YklEIjoiNmpYNzFQUEw0TkciLCJjdHlwIjoiQ29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJQSVRORVlTSElQX0VOVEVSUFJJU0UiLCJQSVRORVlTSElQX1BSTyIsIlNFTkRJTkdfUExBTiIsIkFQSV9CQVNJQyIsIkNPTk5FQ1RPUl9FUElDX1BMQU4iLCJDT05ORUNUT1JfTUNLX1BMQU4iLCJDT05ORUNUT1JfU0NSX1BMQU4iLCJEQVRBUkVUQUlOX1BMQU4iLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJTRU5ESU5HX0VOVEVSUFJJU0VfUExBTiIsIk9VVFNJREVfUElDS1VQIl0sInByZElkIjoicGl0bmV5c2hpcF9wcm8ifX0.BsJhi0MqzkjYfsTFw5MC2JCN6X0qJw7HD3jTV15WSjTyVUi_JWX1P3Ni-WAC4vABqLp3anBnEizlBw3E9un2aaDsqkAj5qnHALX2WrXhd4NX2BmroIFfmwFc1mb-mi1zjPzQ6DisoG8JMNay3Dq4drR66SjrPyzahvZIQqlmyEjWCVfp-xHz3iNRhhzj9C5X5bjrsmIvjmsrrk13UQZP68nYtEWJcY0O3k6YIHuBBpe8zh46TFa2mfzEgk6Q9Jr3OKjwYf7LuW_aZJUoZZxdu-7cAxd12zOEupGIjOsPqzhh_Vo8MTwEawZzxkkYgzzeleaLL7oHHBCybia9gV5XWA\",\n    \"scope\": \"psapi\"\n}"
+				}
+			]
+		},
+		{
+			"name": "RateShop",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJaSFZQdFZlTVFQUU4zVTAwQ3d1SkdYZndDZUU3Tzd1a0YzX0FrQWJKSzA0IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmJ5eVNUMXJyWWNORVVZU1RCZklwRFpYcFM3SUNuYmQ2SzFLU1k0dk1pY00iLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtZHhSWjRQWE41QlBHLURFViIsImlhdCI6MTc0NDI3NzM2NSwiZXhwIjoxNzQ0MjkxNzY1LCJjaWQiOiIwb2EyOW12eTh5dXJDaDhvbzBoOCIsInNjcCI6WyJwc2FwaSJdLCJzdmNWZXIiOiIzLjAiLCJjbGFpbV9wc2FwaSI6eyJlbnRJRCI6IjI2eHZQWERReTllIiwidWlkIjoiMG9hMjltdnk4eXVyQ2g4b28waDgiLCJzdWJJRCI6InNhODVjMDQiLCJwYXJlbnRQbGFuIjoiUElUTkVZU0hJUF9QUk8iLCJjdHlwIjoiY29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJBVURJVF9MT0dHSU5HIiwiQU5BTFlUSUNTMzYwX1BMQU4iLCJBTkFMWVRJQ1MzNjBfTUFJTElOR19QTEFOIiwiQU5BTFlUSUNTMzYwX1NISVBQSU5HX1BMQU4iLCJBTkFMWVRJQ1MzNjBfQ1NTX1BMQU4iLCIyNTY0IiwiREFUQVJFVEFJTl9QTEFOIiwiSU5UTF9IU0xLUCIsIk9VVFNJREVfUElDS1VQIiwiQVVUT01BVElPTl9SVUxFU19PUkRFUl9JTVBPUlQiLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJBUElfQkFTSUMiLCJMT0NLRVJfUExBTiIsIlNFTkRJTkdfRU5URVJQUklTRV9QTEFOIiwiUE9TVEFMX0FQUF9QTEFOX0VDT01NRVJDRSIsIlBPU1RBTF9BUFBfUExBTl9FQ09NTUVSQ0VfQkFTSUMiLCJQSVRORVlTSElQIiwiUElUTkVZU0hJUF8zMERBWV9UUklBTCJdLCJwcmRJZCI6Imhvcml6b24ifX0.aZ5YEyulc10SgM2g1edHQVEOTggd9J7ug83Sy6oeWLVfjY9aYhha50sUFxhhTE7y0JmX1BhWUS4PZXHNx6riRPWjLh3AG-XupVTSvnNJZa9447vzdVkmmofs0-t74Mu7FES666y0GWfeYNuL3BRGyURtmVwypfOgzdRxDGI4yfOnJHLKeRUnUcP1cYj0nBobv2NOc99xyG40pnWGrRdKriBjaktwIQ0LA78uW32ObYi1glPBVRkM50pBKNPC93qXI-6GI-9ZPFtIhcWS2Bp_BivjsTeYom-d5ptI53u7plHKO7EcEm2NyRRMYC2ABGXzAKoWI1rV_1HaWspzJm3wCg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "compactResponse",
+						"value": "true"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eeyJraWQiOiJKZTBEbUZzTUg5Y1YxQnkxcGI3QTdMT0pXX3NiN19aQ0JGQ0Y0WGRTWFgwIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULlBNYk5hWXVmNGxVQVhqdTNMWTI2TURjb3otR3paUzkxM1FacDNydk54ZVUiLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtZHhSWjRQWE41QlBHLURFViIsImlhdCI6MTczMjkzNTYwOCwiZXhwIjoxNzMyOTUwMDA4LCJjaWQiOiIwb2EyOW12eTh5dXJDaDhvbzBoOCIsInNjcCI6WyJwc2FwaSJdLCJzdmNWZXIiOiIzLjAiLCJjbGFpbV9wc2FwaSI6eyJlbnRJRCI6IjI2eHZQWERReTllIiwidWlkIjoiMG9hMjltdnk4eXVyQ2g4b28waDgiLCJzdWJJRCI6InNhODVjMDQiLCJwYXJlbnRQbGFuIjoiUElUTkVZU0hJUF9QUk8iLCJjdHlwIjoiY29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJTRU5ESU5HX1BMQU4iLCJQSVRORVlTSElQX1BSTyIsIlBPU1RBTF9BUFBfUExBTl9FQ09NTUVSQ0UiLCJBVURJVF9MT0dHSU5HIiwiQU5BTFlUSUNTMzYwX1BMQU4iLCJBTkFMWVRJQ1MzNjBfTUFJTElOR19QTEFOIiwiQU5BTFlUSUNTMzYwX1NISVBQSU5HX1BMQU4iLCJBTkFMWVRJQ1MzNjBfQ1NTX1BMQU4iLCJTRU5ESU5HX0VOVEVSUFJJU0VfUExBTiIsIjI1NjQiLCJQSVRORVlTSElQX0NVQkVfSU5URUdSQVRJT04iLCJEQVRBUkVUQUlOX1BMQU4iLCJJTlRMX0hTTEtQIiwiT1VUU0lERV9QSUNLVVAiLCJBVVRPTUFUSU9OX1JVTEVTX09SREVSX0lNUE9SVCIsIklOVExfU0hQIiwiUElUTkVZU0hJUF9FTlRFUlBSSVNFIiwiQVBJX01BTkFHRSIsIkFQSV9TRU5ESU5HX0JBU0lDIiwiQVBJX0JBU0lDIl0sInByZElkIjoicGl0bmV5c2hpcF9wcm8ifX0.WpDDhNJ7nMTT-20tb0OANfqq1OtZgD-Ii7durHWA5TLEmIWvRSmEPl50gXkOQDxtz9n9kDPdGtj0GGKJN0XhLoM0m75XfNXl8ZPzJmnjv5JRqH5aDi9kuafroczY545Ed2DdlFt0QCTikTe3POUS-1XfWnh158-HdBczu702QDB_hKWt_4fN7iXf1-idvD2B2t9w8XMR_CSHuaVqG4v6RlbU5IbIE_H7pZYTpJw3_VsbH6ZbvONhr0B3Rj_M2yk-Sgn35FrO_SaDBxYBlWQuXYRGmJy0yfRaq3QodJi14Ryz_SzAAOiZ3pyeey6g-sIR9pBTSaQdxuap1G3vwVSv1A"
+					},
+					{
+						"key": "partner_id",
+						"value": "sp360",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"dateOfShipment\": \"2025-03-25\",\n    \"fromAddress\": {\n        \"addressLine1\": \"27 Waterview Dr\",\n        \"cityTown\": \"Danbury\",\n        \"stateProvince\": \"CT\",\n        \"postalCode\": \"06811\",\n        \"countryCode\": \"US\",\n        \"company\": \"ABC Company\",\n        \"name\": \"Sasha Sekrotov\",\n        \"phone\": \"323 555-1212\",\n        \"email\": \"rs.canid@gmail.com\",\n        \"residential\": false\n    },\n    \"toAddress\": {\n        \"name\": \"John Do\",\n        \"phone\": \"2032032033\",\n        \"email\": \"sender@email.com\",\n        \"addressLine1\": \"802 Rail Fence Rd\",\n        \"company\": \"PB\",\n        \"residential\": false,\n        \"cityTown\": \"Orange\",\n        \"stateProvince\": \"CT\",\n        \"postalCode\": \"06477\",\n        \"countryCode\": \"US\"\n    },\n    \"parcel\": {\n        \"dimUnit\": \"IN\",\n        \"length\": 6,\n        \"width\": 6,\n        \"height\": 6,\n        \"weightUnit\": \"OZ\",\n        \"weight\": 6\n    },\n    \"parcelType\": \"PKG\",\n    \"serviceId\": \"EM\",\n    \"specialServices\": [\n        {\n            \"inputParameters\": [\n                {\n                    \"name\": \"INPUT_VALUE\",\n                    \"value\": \"200\"\n                }\n            ],\n            \"specialserviceId\": \"Ins\"\n        }\n    ],\n    \"isHazmat\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/rates",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"sendpro360",
+						"pitneycloud",
+						"com"
+					],
+					"path": [
+						"shipping",
+						"api",
+						"v1",
+						"rates"
+					]
+				},
+				"description": "Generated from cURL: curl --location '\nhttps://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/rates'\n\\\n--header 'compactResponse: true' \\\n--header 'Content-Type: application/json' \\\n--header 'Authorization: Bearer eyJraWQiOiJua0o5N2JSMzRrSS1VRDAxZVJ0ajhMS3JEREN0NHhpdGdBWDdhb1g2NzRzIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULldRNDN5NnVrY0NncFctRHJpUHpTam83QmlOMzFfOTg3eTM1UlhuekVYdTQiLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtTkJEbHZYZ2pLOFktREVWIiwiaWF0IjoxNzI1MDIwMjQ4LCJleHAiOjE3MjUwMzQ2NDgsImNpZCI6IjBvYTF4OWRqc3d2SGNlSU94MGg4Iiwic2NwIjpbInBzYXBpIl0sInN2Y1ZlciI6IjMuMCIsImNsYWltX3BzYXBpIjp7ImVudElEIjoiTzN5Qjk5bXBwQTIiLCJ1aWQiOiIwb2ExeDlkanN3dkhjZUlPeDBoOCIsInN1YklEIjoiNmpYNzFQUEw0TkciLCJjdHlwIjoiQ29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJQSVRORVlTSElQX0VOVEVSUFJJU0UiLCJQSVRORVlTSElQX1BSTyIsIlNFTkRJTkdfUExBTiIsIkFQSV9CQVNJQyIsIkNPTk5FQ1RPUl9FUElDX1BMQU4iLCJDT05ORUNUT1JfTUNLX1BMQU4iLCJDT05ORUNUT1JfU0NSX1BMQU4iLCJEQVRBUkVUQUlOX1BMQU4iLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJTRU5ESU5HX0VOVEVSUFJJU0VfUExBTiIsIk9VVFNJREVfUElDS1VQIl19fQ.Qs2djnqQMbAM6a-azTUqIVSJhGfWZxjK1BuwSVSXiTgz3bgUptpiO5I9aGY6dV7BiTiq5z8soMXGa8PittNT0tSu5nrCvqiIL1WOmxMaSb7gdjqkEPyZgP3Hmjgfvt-xJQTC8VVNa0kUrHTOAB7OFOoelbq_vaxuxipJ0EcWi_F4v6Uir7syFQyN7uMfOZYNwgg4peEa1Px3vGFEzT6ltlgvnXOt6EyARftAg8SBN-hGyywxWM4hQuJAGSAiXZxLawtxww8S3v2eJPA7jjW3XnpJervLx4dHGzAzrvd1Zw0m8thX4qISxaut2d9_MQym6n_wCxGi905SH6IC_eDbRg' \\\n--data-raw '{\n    \"fromAddress\": {\n        \"addressLine1\": \"3001 Summer St\",\n        \"cityTown\": \"Stamford\",\n        \"stateProvince\": \"CT\",\n        \"postalCode\": \"06905-4317\",\n        \"countryCode\": \"US\",\n        \"company\": \"ABC Company\",\n        \"name\": \"Sasha Sekrotov\",\n        \"phone\": \"323 555-1212\",\n        \"email\": \"rs.canid@gmail.com\",\n        \"residential\": false\n    },\n    \"toAddress\": {\n        \"company\": \"Pitney Bowes Inc.\",\n        \"name\": \"sender_fname\",\n        \"phone\": \"2032032033\",\n        \"email\": \"sender@email.com\",\n        \"residential\": true,\n        \"addressLine1\": \"762 Atlantic Ave\",\n        \"cityTown\": \"Rochester\",\n        \"stateProvince\": \"NY\",\n        \"postalCode\": \"14609-7418\",\n        \"countryCode\": \"US\"\n    },\n    \"parcel\": {\n        \"dimUnit\": \"IN\",\n        \"length\": 10,\n        \"width\": 10,\n        \"height\": 10,\n        \"weightUnit\": \"OZ\",\n        \"weight\": 1\n    },\n    \"carrierAccounts\": [\n        \"5d1PbPe6RGa\"\n    ],\n      \"parcelType\": \"PKG\"\n}'"
+			},
+			"response": [
+				{
+					"name": "RateShop Copy",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "compactResponse",
+								"value": "true"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJraWQiOiJua0o5N2JSMzRrSS1VRDAxZVJ0ajhMS3JEREN0NHhpdGdBWDdhb1g2NzRzIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULldRNDN5NnVrY0NncFctRHJpUHpTam83QmlOMzFfOTg3eTM1UlhuekVYdTQiLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtTkJEbHZYZ2pLOFktREVWIiwiaWF0IjoxNzI1MDIwMjQ4LCJleHAiOjE3MjUwMzQ2NDgsImNpZCI6IjBvYTF4OWRqc3d2SGNlSU94MGg4Iiwic2NwIjpbInBzYXBpIl0sInN2Y1ZlciI6IjMuMCIsImNsYWltX3BzYXBpIjp7ImVudElEIjoiTzN5Qjk5bXBwQTIiLCJ1aWQiOiIwb2ExeDlkanN3dkhjZUlPeDBoOCIsInN1YklEIjoiNmpYNzFQUEw0TkciLCJjdHlwIjoiQ29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJQSVRORVlTSElQX0VOVEVSUFJJU0UiLCJQSVRORVlTSElQX1BSTyIsIlNFTkRJTkdfUExBTiIsIkFQSV9CQVNJQyIsIkNPTk5FQ1RPUl9FUElDX1BMQU4iLCJDT05ORUNUT1JfTUNLX1BMQU4iLCJDT05ORUNUT1JfU0NSX1BMQU4iLCJEQVRBUkVUQUlOX1BMQU4iLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJTRU5ESU5HX0VOVEVSUFJJU0VfUExBTiIsIk9VVFNJREVfUElDS1VQIl19fQ.Qs2djnqQMbAM6a-azTUqIVSJhGfWZxjK1BuwSVSXiTgz3bgUptpiO5I9aGY6dV7BiTiq5z8soMXGa8PittNT0tSu5nrCvqiIL1WOmxMaSb7gdjqkEPyZgP3Hmjgfvt-xJQTC8VVNa0kUrHTOAB7OFOoelbq_vaxuxipJ0EcWi_F4v6Uir7syFQyN7uMfOZYNwgg4peEa1Px3vGFEzT6ltlgvnXOt6EyARftAg8SBN-hGyywxWM4hQuJAGSAiXZxLawtxww8S3v2eJPA7jjW3XnpJervLx4dHGzAzrvd1Zw0m8thX4qISxaut2d9_MQym6n_wCxGi905SH6IC_eDbRg"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fromAddress\": {\n        \"addressLine1\": \"3001 Summer St\",\n        \"cityTown\": \"Stamford\",\n        \"stateProvince\": \"CT\",\n        \"postalCode\": \"06905-4317\",\n        \"countryCode\": \"US\",\n        \"company\": \"ABC Company\",\n        \"name\": \"Sasha Sekrotov\",\n        \"phone\": \"323 555-1212\",\n        \"email\": \"rs.canid@gmail.com\",\n        \"residential\": false\n    },\n    \"toAddress\": {\n     \n        \"name\": \"sender_fname\",\n        \"phone\": \"2032032033\",\n        \"email\": \"sender@email.com\",\n        \"addressLine1\": \"70 Hanlan RD\",\n        \"company\": \"ABC Company\", \n        \"residential\": false,\n        \"cityTown\": \"Woodbridge\",\n        \"stateProvince\": \"ON\",\n        \"postalCode\": \"L4L 3P6\",\n        \"countryCode\": \"CA\"\n    },\n    \"parcel\": {\n        \"dimUnit\": \"IN\",\n        \"length\": 10,\n        \"width\": 10,\n        \"height\": 10,\n        \"weightUnit\": \"OZ\",\n        \"weight\": 1\n    },\n    \"carrierAccounts\": [\n        \"5d1PbPe6RGa\"\n    ],\n      \"parcelType\": \"PKG\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/rates",
+							"protocol": "https",
+							"host": [
+								"api-dev",
+								"sendpro360",
+								"pitneycloud",
+								"com"
+							],
+							"path": [
+								"shipping",
+								"api",
+								"v1",
+								"rates"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 12 Nov 2024 04:00:28 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "331"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "982cd66e-cbf6-48da-8bad-cd8c59aed18f"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "strict-transport-security",
+							"value": "max-age=31536000; includeSubDomains always"
+						},
+						{
+							"key": "access-control-allow-headers",
+							"value": "Content-Type,Authorization,X-PB-Developer-Partner-ID"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "x-amzn-Remapped-content-length",
+							"value": "331"
+						},
+						{
+							"key": "x-envoy-decorator-operation",
+							"value": "ingress-nginx-nlb-controller.ingress-nginx-nlb.svc.cluster.local:80/*"
+						},
+						{
+							"key": "x-envoy-upstream-service-time",
+							"value": "1519"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "BHXiUFqnoAMFncA="
+						},
+						{
+							"key": "x-amzn-Remapped-server",
+							"value": "istio-envoy"
+						},
+						{
+							"key": "x-pb-transactionid",
+							"value": "xd9eEkBpkEXM69N"
+						},
+						{
+							"key": "access-control-allow-methods",
+							"value": "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+						},
+						{
+							"key": "access-control-max-age",
+							"value": "1728000"
+						},
+						{
+							"key": "x-amzn-Remapped-date",
+							"value": "Tue, 12 Nov 2024 04:00:28 GMT"
+						},
+						{
+							"key": "access-control-allow-credentials",
+							"value": "true"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"rates\": [\n        {\n            \"baseCharge\": 18.74,\n            \"carrier\": \"DHLEXP\",\n            \"carrierAccount\": \"5d1PbPe6RGa\",\n            \"currencyCode\": \"USD\",\n            \"deliveryCommitment\": {\n                \"estimatedDeliveryDateTime\": \"2024-11-13T23:59:00\",\n                \"minEstimatedNumberOfDays\": \"1\"\n            },\n            \"parcelType\": \"PKG\",\n            \"serviceId\": \"EXP\",\n            \"surcharges\": [\n                {\n                    \"fee\": 2.54,\n                    \"name\": \"FUEL\"\n                }\n            ],\n            \"totalCarrierCharge\": 21.78,\n            \"isHazmat\": false\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "9a. Create Shipment Domestic",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();\r",
+							"var shipmentId= data.shipmentId;\r",
+							"console.log(shipmentId);\r",
+							"if (shipmentId!==undefined)\r",
+							"{\r",
+							"    pm.environment.set(\"shipmentId\", shipmentId);\r",
+							"    }\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJaSFZQdFZlTVFQUU4zVTAwQ3d1SkdYZndDZUU3Tzd1a0YzX0FrQWJKSzA0IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULk1FNjRpUGg0QUN4ckU0ZnNuc2N6OEhTUmt6UlplbUJFM1V6alNHWnQ0cEkiLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtZHhSWjRQWE41QlBHLURFViIsImlhdCI6MTc0NjAzNjQ5MywiZXhwIjoxNzQ2MDUwODkzLCJjaWQiOiIwb2EyOW12eTh5dXJDaDhvbzBoOCIsInNjcCI6WyJwc2FwaSJdLCJzdmNWZXIiOiIzLjAiLCJjbGFpbV9wc2FwaSI6eyJlbnRJRCI6IjI2eHZQWERReTllIiwidWlkIjoiMG9hMjltdnk4eXVyQ2g4b28waDgiLCJzdWJJRCI6InNhODVjMDQiLCJwYXJlbnRQbGFuIjoiUElUTkVZU0hJUF9QUk8iLCJjdHlwIjoiY29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJBVURJVF9MT0dHSU5HIiwiQU5BTFlUSUNTMzYwX1BMQU4iLCJBTkFMWVRJQ1MzNjBfTUFJTElOR19QTEFOIiwiQU5BTFlUSUNTMzYwX1NISVBQSU5HX1BMQU4iLCJBTkFMWVRJQ1MzNjBfQ1NTX1BMQU4iLCIyNTY0IiwiREFUQVJFVEFJTl9QTEFOIiwiSU5UTF9IU0xLUCIsIk9VVFNJREVfUElDS1VQIiwiQVVUT01BVElPTl9SVUxFU19PUkRFUl9JTVBPUlQiLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJBUElfQkFTSUMiLCJMT0NLRVJfUExBTiIsIlNFTkRJTkdfRU5URVJQUklTRV9QTEFOIiwiUE9TVEFMX0FQUF9QTEFOX0VDT01NRVJDRSIsIlBPU1RBTF9BUFBfUExBTl9FQ09NTUVSQ0VfQkFTSUMiLCJQSVRORVlTSElQIiwiUElUTkVZU0hJUF9FTlRFUlBSSVNFIl0sInByZElkIjoicGl0bmV5c2hpcF9lbnQifX0.g1biGip8r87ToGlAdKFennWA5iKW7TyYm7QNaTVlxuMBPIbvw6JVoA5e0yBaRAOzwTflxBFGduEeu6IL9n8HZDc7r1aYIlQm0XXr08GifjgBIqOzYxvXSqekMPMHviUZp4u11EchpFiswhuyhBBplqzds7L8c3Tw9OQ5e3gghDVa7XWEHkY1wRJj3KdVRZsmCk4RWHKNlEsU6jdS2P4c6tlscJ2t5iG8sngJq97HHco2-6Jy3AIL-JyoDsmhGnlT73YIH-wC-5-6VyhPn3O542biDE78DrLRSQVnbRwMsThw-bFW3ic3gbK3SfLbGoxfNTzMeAejqW4G8r9Uq105Yg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-PB-Shipper-Carrier-AccountId",
+						"value": "{{carrier_accountID}}",
+						"description": "Indicates Carrier Account ID which is linked to user's account."
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-PB-Developer-Partner-ID",
+						"value": "{{developer_partner_id}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"size\": \"DOC_4X6\",\n    \"type\": \"SHIPPING_LABEL\",\n    \"fromAddress\": {\n        \"company\": \"PB\",\n        \"addressLine1\": \"24182 Kathy Ave\",\n        \"addressLine2\": \"\",\n        \"addressLine3\": \"\",\n        \"cityTown\": \"Lake Forest\",\n        \"countryCode\": \"US\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"92630-1827\",\n        \"stateProvince\": \"CA\"\n    },\n    \"parcel\": {\n        \"height\": 10,\n        \"length\": 10,\n        \"dimUnit\": \"IN\",\n        \"width\": 10,\n        \"weightUnit\": \"OZ\",\n        \"weight\": 10\n    },\n    \"carrierAccountId\": \"E8G5zl9W9Lx\",\n    \"parcelType\": \"PKG\",\n    \"serviceId\": \"UGA\",\n\n    \"shipmentOptions\": {\n        \"addToManifest\": true,\n        \"packageDescription\": \"test\"\n    },\n    \"metadata\": [\n        {\n            \"name\": \"costAccountName\",\n            \"value\": \"cost account 123\"\n        }\n    ],\n    \"toAddress\": {\n        \"company\": \"PB\",\n        \"addressLine1\": \"55 Pharr Rd NW, Apt E104\",\n        \"addressLine2\": \"\",\n        \"addressLine3\": \"\",\n        \"cityTown\": \"Atlanta\",\n        \"countryCode\": \"US\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"30305-2151\",\n        \"stateProvince\": \"GA\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/shipments",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"sendpro360",
+						"pitneycloud",
+						"com"
+					],
+					"path": [
+						"shipping",
+						"api",
+						"v1",
+						"shipments"
+					]
+				},
+				"description": "This operaion creates a new Shipment or Shipment Label.This is for both Domestic and International.<br> For domestic, Create a shipment requires domestic addresses (within same country)- ToAddress and FromAddress, and  carrier service and special service.<br> While for International, Create a shipment requires international delivery, that is ToAddress must be the diffrent country (and not the same country mentioned in From Address), selected services, special services, and customs information."
+			},
+			"response": [
+				{
+					"name": "9a. Create Shipment Domestic",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-PB-Shipper-Carrier-AccountId",
+								"value": "gJdW5ra9oo7",
+								"description": "Indicates Carrier Account ID which is linked to user's account."
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-PB-Developer-Partner-ID",
+								"value": "sa81d03",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "0oa1lus3ebrBrCjPr0h8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fromAddress\": {\n    \"company\": \"Pitney Bowes Inc.\",\n    \"name\": \"Paul Wright\",\n    \"phone\": \"203-555-1213\",\n    \"email\": \"john.publica@pb.com\",\n    \"addressLines\": [\n      \"3001 Summer Street\"\n    ],\n    \"cityTown\": \"Stamford\",\n    \"stateProvince\": \"CT\",\n    \"postalCode\": \"06905\",\n    \"countryCode\": \"US\"\n  },\n  \"toAddress\": {\n    \"company\": \"ABC Company\",\n    \"name\": \"Rufous Sirius Canid\",\n    \"phone\": \"323 555-1212\",\n    \"email\": \"rs.canid@gmail.com\",\n    \"addressLines\": [\n      \"762 Atlantic Ave\"\n    ],\n    \"cityTown\": \"Rochester\",\n    \"stateProvince\": \"NY\",\n    \"postalCode\": \"14609\",\n    \"countryCode\": \"US\"\n  },\n  \"parcel\": {\n    \"weight\": {\n      \"unitOfMeasurement\": \"OZ\",\n      \"weight\": 8\n    },\n    \"dimension\": {\n      \"unitOfMeasurement\": \"IN\",\n      \"length\": 12.5,\n      \"width\": 9.5,\n      \"height\": 1\n    }\n  },\n  \"rates\": [\n    {\n      \"carrier\": \"usps\",\n      \"serviceId\": \"EM\",\n      \"parcelType\": \"PKG\",\n      \"specialServices\": [\n        {\n          \"specialServiceId\": \"Ins\",\n          \"inputParameters\": [\n            {\n              \"name\": \"INPUT_VALUE\",\n              \"value\": \"5000\"\n            }\n          ]\n        },\n        {\n          \"specialServiceId\": \"RR\",\n          \"inputParameters\": [\n            {\n              \"name\": \"INPUT_VALUE\",\n              \"value\": \"12345\"\n            }\n          ]\n        },\n        {\n          \"specialServiceId\": \"liveanimal\"\n        },\n        {\n          \"specialServiceId\": \"Sig\"\n        }\n        \n      ]\n    }\n  ],\n  \"documents\": [\n    {\n      \"type\": \"SHIPPING_LABEL\",\n      \"contentType\": \"URL\",\n      \"size\": \"DOC_8X11\",\n      \"fileFormat\": \"PDF\",\n      \"printReceipt\": true\n    }\n  ],\n  \"shipmentOptions\": [\n    {\n      \"name\": \"SHIPPER_ID\",\n      \"value\": \"88888888\"\n    },\n    \n    {\n      \"name\": \"PRINT_CUSTOM_MESSAGE_1\",\n      \"value\": \"jlsjlsjlsjlsjljsljsldddljssjlsjsjlsjsljlsjlsjlsjls\"\n    },\n    {\n      \"name\": \"HIDE_TOTAL_CARRIER_CHARGE\",\n      \"value\": \"false\"\n    },\n    {\n      \"name\": \"SHIPPING_LABEL_RECEIPT\",\n      \"value\": \"RECEIPT_WITH_INSTRUCTIONS\"\n    }\n  ]\n  \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-sandbox.sendpro360.pitneybowes.com/shipping/api/v1/shipments",
+							"protocol": "https",
+							"host": [
+								"api-sandbox",
+								"sendpro360",
+								"pitneybowes",
+								"com"
+							],
+							"path": [
+								"shipping",
+								"api",
+								"v1",
+								"shipments"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Mon, 03 Apr 2023 09:51:24 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2325"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Server"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "6bba9530-cfa5-435e-a70e-72c3f9c1ad51"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains always"
+						},
+						{
+							"key": "x-amzn-Remapped-Content-Length",
+							"value": "2325"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "x-amzn-Remapped-Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "Cy4wVE32oAMF_UQ="
+						},
+						{
+							"key": "x-amzn-Remapped-server",
+							"value": "hide"
+						},
+						{
+							"key": "X-Pb-Transactionid",
+							"value": "NQRK6OEL1RBPEgJ"
+						},
+						{
+							"key": "x-amzn-Remapped-Date",
+							"value": "Mon, 03 Apr 2023 09:51:24 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"correlationId\": \"4cad3afe86274ba29b535452b2ca6617\",\n    \"documents\": [\n        {\n            \"contentType\": \"URL\",\n            \"contents\": \"https://sandbox2-gcsweb.test.pb.com/usps/517575957/outbound/label/4cad3afe86274ba29b535452b2ca6617.pdf\",\n            \"fileFormat\": \"PDF\",\n            \"size\": \"DOC_8X11\",\n            \"type\": \"SHIPPING_LABEL\"\n        }\n    ],\n    \"fromAddress\": {\n        \"addressLines\": [\n            \"3001 Summer St\"\n        ],\n        \"cityTown\": \"Stamford\",\n        \"company\": \"Pitney Bowes Inc.\",\n        \"countryCode\": \"US\",\n        \"email\": \"john.publica@pb.com\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"06905-4317\",\n        \"residential\": false,\n        \"stateProvince\": \"CT\",\n        \"deliveryPoint\": \"99\",\n        \"carrierRoute\": \"C006\"\n    },\n    \"parcel\": {\n        \"weight\": {\n            \"unitOfMeasurement\": \"OZ\",\n            \"weight\": 8\n        },\n        \"dimension\": {\n            \"length\": 12.5,\n            \"height\": 9.5,\n            \"width\": 1,\n            \"unitOfMeasurement\": \"IN\"\n        }\n    },\n    \"parcelTrackingNumber\": \"9471309105156000624885\",\n    \"rates\": [\n        {\n            \"alternateBaseCharge\": 25.5,\n            \"alternateTotalCharge\": 117.35,\n            \"baseCharge\": 25.5,\n            \"carrier\": \"USPS\",\n            \"currencyCode\": \"USD\",\n            \"dimensionalWeight\": {\n                \"unitOfMeasurement\": \"OZ\"\n            },\n            \"inductionPostalCode\": \"06905\",\n            \"parcelType\": \"PKG\",\n            \"rateTypeId\": \"CONTRACT_RATES\",\n            \"serviceId\": \"EM\",\n            \"specialServices\": [\n                {\n                    \"specialServiceId\": \"Ins\",\n                    \"inputParameters\": [\n                        {\n                            \"name\": \"INPUT_VALUE\",\n                            \"value\": \"5000\"\n                        }\n                    ],\n                    \"fee\": 88.5\n                },\n                {\n                    \"specialServiceId\": \"RR\",\n                    \"inputParameters\": [\n                        {\n                            \"name\": \"INPUT_VALUE\",\n                            \"value\": \"12345\"\n                        }\n                    ],\n                    \"fee\": 3.35\n                },\n                {\n                    \"specialServiceId\": \"liveanimal\",\n                    \"fee\": 0\n                },\n                {\n                    \"specialServiceId\": \"Sig\",\n                    \"fee\": 0\n                },\n                {\n                    \"specialServiceId\": \"PO to Addressee\",\n                    \"fee\": 0\n                }\n            ],\n            \"totalCarrierCharge\": 117.35,\n            \"destinationZone\": \"3\"\n        }\n    ],\n    \"shipmentId\": \"USPS2200571002729311\",\n    \"shipmentOptions\": [\n        {\n            \"name\": \"SHIPPER_BASE_CHARGE\",\n            \"value\": \"25.5\"\n        },\n        {\n            \"name\": \"SHIPPER_TOTAL_CHARGE\",\n            \"value\": \"117.35\"\n        },\n        {\n            \"name\": \"HIDE_TOTAL_CARRIER_CHARGE\",\n            \"value\": \"false\"\n        },\n        {\n            \"name\": \"SHIPPER_ID\",\n            \"value\": \"88888888\"\n        },\n        {\n            \"name\": \"ADD_TO_MANIFEST\",\n            \"value\": \"false\"\n        },\n        {\n            \"name\": \"FUTURE_SHIPMENT_DATE\",\n            \"value\": \"2023-04-03 08:00:00.000\"\n        },\n        {\n            \"name\": \"MINIMAL_ADDRESS_VALIDATION\",\n            \"value\": \"false\"\n        },\n        {\n            \"name\": \"SHIPPING_LABEL_RECEIPT\",\n            \"value\": \"receiptWithInstructions\"\n        },\n        {\n            \"name\": \"PRINT_CUSTOM_MESSAGE_1\",\n            \"value\": \"jlsjlsjlsjlsjljsljsldddljssjlsjsjlsjsljlsjlsjlsjls\"\n        },\n        {\n            \"name\": \"CF_LABEL_TYPE\",\n            \"value\": \"NONE\"\n        }\n    ],\n    \"toAddress\": {\n        \"addressLines\": [\n            \"762 Atlantic Ave\"\n        ],\n        \"cityTown\": \"Rochester\",\n        \"company\": \"ABC Company\",\n        \"countryCode\": \"US\",\n        \"email\": \"rs.canid@gmail.com\",\n        \"name\": \"Rufous Sirius Canid\",\n        \"phone\": \"323 555-1212\",\n        \"postalCode\": \"14609-7418\",\n        \"residential\": false,\n        \"stateProvince\": \"NY\",\n        \"deliveryPoint\": \"62\",\n        \"carrierRoute\": \"C004\"\n    }\n}"
+				},
+				{
+					"name": "9a. Create Shipment Domestic Copy",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-PB-Shipper-Carrier-AccountId",
+								"value": "{{carrier_accountID}}",
+								"description": "Indicates Carrier Account ID which is linked to user's account."
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-PB-Developer-Partner-ID",
+								"value": "{{developer_partner_id}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"size\": \"DOC_8X11\",\n    \"type\": \"SHIPPING_LABEL\",\n    \"fromAddress\": {\n        \"company\": \"PB\",\n        \"addressLine1\": \"24182 Kathy Ave\",\n        \"addressLine2\": \"24182 Kathy Ave\",\n        \"addressLine3\": \"24182 Kathy Ave\",\n        \"cityTown\": \"Lake Forest\",\n        \"countryCode\": \"US\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"92630-1827\",\n        \"stateProvince\": \"CA\"\n    },\n    \"parcel\": {\n        \"height\": 10,\n        \"length\": 10,\n        \"dimUnit\": \"IN\",\n        \"width\": 10,\n        \"weightUnit\": \"OZ\",\n        \"weight\": 10\n    },\n    \"carrierAccountId\": \"5d1PbPe6RGa\",\n    \"parcelType\": \"PKG\",\n    \"serviceId\": \"NDA\",\n    \"specialServices\": [\n        {\n            \"inputParameters\": [\n                {\n                    \"name\": \"INPUT_VALUE\",\n                    \"value\": \"101\"\n                }\n            ],\n            \"specialserviceId\": \"INS\"\n        }\n    ],\n    \"shipmentOptions\": {\n        \"addToManifest\": true,\n        \"packageDescription\": \"test\"\n    },\n    \"metadata\": [\n        {\n            \"name\": \"costAccountName\",\n            \"value\": \"cost account 123\"\n        }\n    ],\n    \"toAddress\": {\n        \"company\": \"PB\",\n        \"addressLine1\": \"55 Pharr Rd NW, Apt E104\",\n        \"addressLine2\": \"55 Pharr Rd NW, Apt E104\",\n        \"addressLine3\": \"55 Pharr Rd NW, Apt E104\",\n        \"cityTown\": \"Atlanta\",\n        \"countryCode\": \"US\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"30305-2151\",\n        \"stateProvince\": \"GA\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/shipments",
+							"protocol": "https",
+							"host": [
+								"api-dev",
+								"sendpro360",
+								"pitneycloud",
+								"com"
+							],
+							"path": [
+								"shipping",
+								"api",
+								"v1",
+								"shipments"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 12 Nov 2024 04:27:22 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1279"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "0a1bd789-c115-4b8d-bc64-403e8acc5f5e"
+						},
+						{
+							"key": "access-control-allow-origin",
+							"value": "*"
+						},
+						{
+							"key": "strict-transport-security",
+							"value": "max-age=31536000; includeSubDomains always"
+						},
+						{
+							"key": "access-control-allow-headers",
+							"value": "Content-Type,Authorization,X-PB-Developer-Partner-ID"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "x-amzn-Remapped-content-length",
+							"value": "1279"
+						},
+						{
+							"key": "x-envoy-decorator-operation",
+							"value": "ingress-nginx-nlb-controller.ingress-nginx-nlb.svc.cluster.local:80/*"
+						},
+						{
+							"key": "x-envoy-upstream-service-time",
+							"value": "3316"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "BHbeKH5QIAMF9Wg="
+						},
+						{
+							"key": "x-amzn-Remapped-server",
+							"value": "istio-envoy"
+						},
+						{
+							"key": "x-pb-transactionid",
+							"value": "VRGgdvXpBZbMkRG"
+						},
+						{
+							"key": "access-control-allow-methods",
+							"value": "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+						},
+						{
+							"key": "access-control-max-age",
+							"value": "1728000"
+						},
+						{
+							"key": "x-amzn-Remapped-date",
+							"value": "Tue, 12 Nov 2024 04:27:22 GMT"
+						},
+						{
+							"key": "access-control-allow-credentials",
+							"value": "true"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"correlationId\": \"f108ed1e88ba4961a801c61ec0469e75\",\n    \"labelLayout\": [\n        {\n            \"contentType\": \"URL\",\n            \"contents\": \"https://prv-labels.gcs.pitneycloud.com/f108ed1e88ba4961a801c61ec0469e75.pdf\",\n            \"fileFormat\": \"PDF\",\n            \"size\": \"DOC_8X11\",\n            \"type\": \"SHIPPING_LABEL\"\n        }\n    ],\n    \"fromAddress\": {\n        \"addressLine1\": \"24182 Kathy Ave\",\n        \"addressLine2\": \"24182 Kathy Ave 24182 Kathy Ave\",\n        \"cityTown\": \"Lake Forest\",\n        \"company\": \"PB\",\n        \"countryCode\": \"US\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"92630-1827\",\n        \"residential\": true,\n        \"stateProvince\": \"CA\"\n    },\n    \"parcel\": {\n        \"length\": 10,\n        \"height\": 10,\n        \"width\": 10,\n        \"dimUnit\": \"IN\",\n        \"weightUnit\": \"OZ\",\n        \"weight\": 10\n    },\n    \"rate\": {\n        \"baseCharge\": 152.65,\n        \"carrier\": \"DHLEXP\",\n        \"currencyCode\": \"USD\",\n        \"parcelType\": \"PKG\",\n        \"serviceId\": \"NDA\",\n        \"specialServices\": [\n            {\n                \"specialServiceId\": \"INS\",\n                \"inputParameters\": [\n                    {\n                        \"name\": \"INPUT_VALUE\",\n                        \"value\": \"101\"\n                    }\n                ],\n                \"fee\": 9.8\n            }\n        ],\n        \"surcharges\": [\n            {\n                \"fee\": 25.19,\n                \"name\": \"FUEL\"\n            }\n        ],\n        \"totalCarrierCharge\": 187.64\n    },\n    \"toAddress\": {\n        \"addressLine1\": \"55 Pharr Rd NW\",\n        \"addressLine2\": \"55 Pharr Rd Nw, \",\n        \"cityTown\": \"Atlanta\",\n        \"company\": \"PB\",\n        \"countryCode\": \"US\",\n        \"name\": \"Paul Wright\",\n        \"phone\": \"203-555-1213\",\n        \"postalCode\": \"30305-2151\",\n        \"residential\": true,\n        \"stateProvince\": \"GA\"\n    },\n    \"parcelTrackingNumber\": \"2814426856\",\n    \"shipmentId\": \"DHLEXP2200686905419914\",\n    \"shipmentOptions\": {\n        \"packageDescription\": \"test\",\n        \"timeOffset\": \"-00:00\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "6. Get Carrier Accounts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json();\r",
+							"var carrier_accountID= data.carrierAccounts[0].carrierAccountId;\r",
+							"\r",
+							"if (carrier_accountID!==undefined)\r",
+							"{\r",
+							"    pm.environment.set(\"carrier_accountID\", carrier_accountID);\r",
+							"    }\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJ3cmtXT0lKa2tnLXpZVTg3X3B3NW1IZHdfT1RzVjhRTTM0c083MTUzSjc4IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULk80cGhicTFaZEE2ckMzQ19GdC05N0lwblJfUTM2cG8zQ0R6Q2JHOGRyb3ciLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYXRtcmNzSll5NWowaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtMjF6bXJEV2JMMk0tUUEiLCJpYXQiOjE3NDE4NjkzMDcsImV4cCI6MTc0MTg4MzcwNywiY2lkIjoiMG9hMjM1NGN5dzRBMGM2aGIwaDgiLCJzY3AiOlsicHNhcGkiXSwic3ZjVmVyIjoiMy4wIiwiY2xhaW1fcHNhcGkiOnsiZW50SUQiOiJPTnl6eWxONWExeCIsInVpZCI6IjBvYTIzNTRjeXc0QTBjNmhiMGg4Iiwic3ViSUQiOiJCTXI0Z0o1WTV4bSIsImN0eXAiOiJDb21tZXJjaWFsIiwiY250cnkiOiJVUyIsInBsYW5zIjpbIkNPTkZJR1VSQUJMRV9VSV9QTEFOIiwiUE9TVEFMX0FQUF9QTEFOX0VDT01NRVJDRSIsIlNFTkRJTkdfU0hJUEFDQ0VMX0VOVEVSUFJJU0UiLCJTSElQQUNDRUxfRU5URVJQUklTRV9QTEFURk9STSIsIkFVRElUX0xPR0dJTkciLCJDT05ORUNUT1JfTVNEMzY1IiwiQVBJX01BTkFHRSIsIkFQSV9TRU5ESU5HX0JBU0lDIiwiQVBJX0JBU0lDIiwiQ09OTkVDVE9SX05FVFNVSVRFIiwiQ09OU1VNRVJfUkVUVVJOUyIsIkFOQUxZVElDU19QTEFOIiwiU0hQQUNDRUxfQURWX0FOTCIsIjcyMDciXSwicHJkSWQiOiJTaGlwQWNjZWwifX0.W5AMAIOMGkpV4mcXPtA5rljlRlkzLADK-FTjtRVgCcdlgY-EPUdMw-YX5GVRaCXaAi5LDJYd1zNrL5QwN7huOqTcEGTmpuhdFMbPZNtN9eFN1qMruBNvucjnBxy8XKl_C07y7Rj5aRoGgf2bVwC-wiHkinM-oRogSvgZblPVBLGkIgAmBkI1-UxQguga1Xww76rNnk47i34k1WCFS0j_rcwWTf1IPbaUQpYYZJhMeKYRgcn2Kbx6lKUDpg-_17ZMqCWQBeT7OOwCEcEMSC8kaMM98VANwxlR8iFOeO7GnX4fw8_1A2v379Uzx2FyPrd3oyM69EJdasyNKV10XBY2wA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-PB-Developer-Partner-ID",
+						"value": "{{developer_partner_id}}",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-api-key",
+						"value": "{{api_key}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/carrierAccounts",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"sendpro360",
+						"pitneycloud",
+						"com"
+					],
+					"path": [
+						"shipping",
+						"api",
+						"v1",
+						"carrierAccounts"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "6. Get Carrier Accounts",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-PB-Developer-Partner-ID",
+								"value": "sa81d03",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "0oa1lus3ebrBrCjPr0h8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api-sandbox.sendpro360.pitneybowes.com/shipping/api/v1/carrierAccounts",
+							"protocol": "https",
+							"host": [
+								"api-sandbox",
+								"sendpro360",
+								"pitneybowes",
+								"com"
+							],
+							"path": [
+								"shipping",
+								"api",
+								"v1",
+								"carrierAccounts"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Mon, 03 Apr 2023 09:50:44 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "78"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Server",
+							"value": "Server"
+						},
+						{
+							"key": "x-amzn-RequestId",
+							"value": "bc2369f4-b6cc-4fa1-aa23-18f1db18cc18"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains always"
+						},
+						{
+							"key": "x-amzn-Remapped-Content-Length",
+							"value": "78"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "x-amzn-Remapped-Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-amz-apigw-id",
+							"value": "Cy4qMFGPoAMFvVg="
+						},
+						{
+							"key": "x-amzn-Remapped-server",
+							"value": "hide"
+						},
+						{
+							"key": "X-Pb-Transactionid",
+							"value": "wzQ4ymzXE1eRo5a"
+						},
+						{
+							"key": "x-amzn-Remapped-Date",
+							"value": "Mon, 03 Apr 2023 09:50:44 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"carrierAccounts\": [\n        {\n            \"carrierAccountId\": \"gJdW5ra9oo7\",\n            \"carrierName\": \"USPS\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Tracking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJaSFZQdFZlTVFQUU4zVTAwQ3d1SkdYZndDZUU3Tzd1a0YzX0FrQWJKSzA0IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULk1FNjRpUGg0QUN4ckU0ZnNuc2N6OEhTUmt6UlplbUJFM1V6alNHWnQ0cEkiLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtZHhSWjRQWE41QlBHLURFViIsImlhdCI6MTc0NjAzNjQ5MywiZXhwIjoxNzQ2MDUwODkzLCJjaWQiOiIwb2EyOW12eTh5dXJDaDhvbzBoOCIsInNjcCI6WyJwc2FwaSJdLCJzdmNWZXIiOiIzLjAiLCJjbGFpbV9wc2FwaSI6eyJlbnRJRCI6IjI2eHZQWERReTllIiwidWlkIjoiMG9hMjltdnk4eXVyQ2g4b28waDgiLCJzdWJJRCI6InNhODVjMDQiLCJwYXJlbnRQbGFuIjoiUElUTkVZU0hJUF9QUk8iLCJjdHlwIjoiY29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJBVURJVF9MT0dHSU5HIiwiQU5BTFlUSUNTMzYwX1BMQU4iLCJBTkFMWVRJQ1MzNjBfTUFJTElOR19QTEFOIiwiQU5BTFlUSUNTMzYwX1NISVBQSU5HX1BMQU4iLCJBTkFMWVRJQ1MzNjBfQ1NTX1BMQU4iLCIyNTY0IiwiREFUQVJFVEFJTl9QTEFOIiwiSU5UTF9IU0xLUCIsIk9VVFNJREVfUElDS1VQIiwiQVVUT01BVElPTl9SVUxFU19PUkRFUl9JTVBPUlQiLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJBUElfQkFTSUMiLCJMT0NLRVJfUExBTiIsIlNFTkRJTkdfRU5URVJQUklTRV9QTEFOIiwiUE9TVEFMX0FQUF9QTEFOX0VDT01NRVJDRSIsIlBPU1RBTF9BUFBfUExBTl9FQ09NTUVSQ0VfQkFTSUMiLCJQSVRORVlTSElQIiwiUElUTkVZU0hJUF9FTlRFUlBSSVNFIl0sInByZElkIjoicGl0bmV5c2hpcF9lbnQifX0.g1biGip8r87ToGlAdKFennWA5iKW7TyYm7QNaTVlxuMBPIbvw6JVoA5e0yBaRAOzwTflxBFGduEeu6IL9n8HZDc7r1aYIlQm0XXr08GifjgBIqOzYxvXSqekMPMHviUZp4u11EchpFiswhuyhBBplqzds7L8c3Tw9OQ5e3gghDVa7XWEHkY1wRJj3KdVRZsmCk4RWHKNlEsU6jdS2P4c6tlscJ2t5iG8sngJq97HHco2-6Jy3AIL-JyoDsmhGnlT73YIH-wC-5-6VyhPn3O542biDE78DrLRSQVnbRwMsThw-bFW3ic3gbK3SfLbGoxfNTzMeAejqW4G8r9Uq105Yg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer <YOUR_TOKEN_HERE>"
+					},
+					{
+						"key": "X-PB-Developer-Partner-ID",
+						"value": "string",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "https://api-dev.sendpro360.pitneycloud.com/shippingtracking/api/v1/tracking/9434609105156005963743",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"sendpro360",
+						"pitneycloud",
+						"com"
+					],
+					"path": [
+						"shippingtracking",
+						"api",
+						"v1",
+						"tracking",
+						"9434609105156005963743"
+					]
+				},
+				"description": "Generated from cURL: curl -i -X GET \\\n  'https://api-dev.sendpro360.pitneycloud.com/shippingtracking/api/v1/tracking/{trackingNumber}?carrier=USPS' \\\n  -H 'Authorization: Bearer <YOUR_TOKEN_HERE>' \\\n  -H 'X-PB-Developer-Partner-ID: string'"
+			},
+			"response": []
+		},
+		{
+			"name": "Cancellation ",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJaSFZQdFZlTVFQUU4zVTAwQ3d1SkdYZndDZUU3Tzd1a0YzX0FrQWJKSzA0IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmJ5eVNUMXJyWWNORVVZU1RCZklwRFpYcFM3SUNuYmQ2SzFLU1k0dk1pY00iLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtZHhSWjRQWE41QlBHLURFViIsImlhdCI6MTc0NDI3NzM2NSwiZXhwIjoxNzQ0MjkxNzY1LCJjaWQiOiIwb2EyOW12eTh5dXJDaDhvbzBoOCIsInNjcCI6WyJwc2FwaSJdLCJzdmNWZXIiOiIzLjAiLCJjbGFpbV9wc2FwaSI6eyJlbnRJRCI6IjI2eHZQWERReTllIiwidWlkIjoiMG9hMjltdnk4eXVyQ2g4b28waDgiLCJzdWJJRCI6InNhODVjMDQiLCJwYXJlbnRQbGFuIjoiUElUTkVZU0hJUF9QUk8iLCJjdHlwIjoiY29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJBVURJVF9MT0dHSU5HIiwiQU5BTFlUSUNTMzYwX1BMQU4iLCJBTkFMWVRJQ1MzNjBfTUFJTElOR19QTEFOIiwiQU5BTFlUSUNTMzYwX1NISVBQSU5HX1BMQU4iLCJBTkFMWVRJQ1MzNjBfQ1NTX1BMQU4iLCIyNTY0IiwiREFUQVJFVEFJTl9QTEFOIiwiSU5UTF9IU0xLUCIsIk9VVFNJREVfUElDS1VQIiwiQVVUT01BVElPTl9SVUxFU19PUkRFUl9JTVBPUlQiLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJBUElfQkFTSUMiLCJMT0NLRVJfUExBTiIsIlNFTkRJTkdfRU5URVJQUklTRV9QTEFOIiwiUE9TVEFMX0FQUF9QTEFOX0VDT01NRVJDRSIsIlBPU1RBTF9BUFBfUExBTl9FQ09NTUVSQ0VfQkFTSUMiLCJQSVRORVlTSElQIiwiUElUTkVZU0hJUF8zMERBWV9UUklBTCJdLCJwcmRJZCI6Imhvcml6b24ifX0.aZ5YEyulc10SgM2g1edHQVEOTggd9J7ug83Sy6oeWLVfjY9aYhha50sUFxhhTE7y0JmX1BhWUS4PZXHNx6riRPWjLh3AG-XupVTSvnNJZa9447vzdVkmmofs0-t74Mu7FES666y0GWfeYNuL3BRGyURtmVwypfOgzdRxDGI4yfOnJHLKeRUnUcP1cYj0nBobv2NOc99xyG40pnWGrRdKriBjaktwIQ0LA78uW32ObYi1glPBVRkM50pBKNPC93qXI-6GI-9ZPFtIhcWS2Bp_BivjsTeYom-d5ptI53u7plHKO7EcEm2NyRRMYC2ABGXzAKoWI1rV_1HaWspzJm3wCg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJraWQiOiJaSFZQdFZlTVFQUU4zVTAwQ3d1SkdYZndDZUU3Tzd1a0YzX0FrQWJKSzA0IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULmJ5eVNUMXJyWWNORVVZU1RCZklwRFpYcFM3SUNuYmQ2SzFLU1k0dk1pY00iLCJpc3MiOiJodHRwczovL3BpdG5leWJvd2VzLm9rdGFwcmV2aWV3LmNvbS9vYXV0aDIvYXVzMWtyYWcxazJuc2htWTgwaDgiLCJhdWQiOiJodHRwczovL2FwaS5waXRuZXlib3dlcy5jb20iLCJzdWIiOiJBUEktU1AzNjAtZHhSWjRQWE41QlBHLURFViIsImlhdCI6MTc0NDI3NzM2NSwiZXhwIjoxNzQ0MjkxNzY1LCJjaWQiOiIwb2EyOW12eTh5dXJDaDhvbzBoOCIsInNjcCI6WyJwc2FwaSJdLCJzdmNWZXIiOiIzLjAiLCJjbGFpbV9wc2FwaSI6eyJlbnRJRCI6IjI2eHZQWERReTllIiwidWlkIjoiMG9hMjltdnk4eXVyQ2g4b28waDgiLCJzdWJJRCI6InNhODVjMDQiLCJwYXJlbnRQbGFuIjoiUElUTkVZU0hJUF9QUk8iLCJjdHlwIjoiY29tbWVyY2lhbCIsImNudHJ5IjoiVVMiLCJwbGFucyI6WyJBVURJVF9MT0dHSU5HIiwiQU5BTFlUSUNTMzYwX1BMQU4iLCJBTkFMWVRJQ1MzNjBfTUFJTElOR19QTEFOIiwiQU5BTFlUSUNTMzYwX1NISVBQSU5HX1BMQU4iLCJBTkFMWVRJQ1MzNjBfQ1NTX1BMQU4iLCIyNTY0IiwiREFUQVJFVEFJTl9QTEFOIiwiSU5UTF9IU0xLUCIsIk9VVFNJREVfUElDS1VQIiwiQVVUT01BVElPTl9SVUxFU19PUkRFUl9JTVBPUlQiLCJBUElfTUFOQUdFIiwiQVBJX1NFTkRJTkdfQkFTSUMiLCJBUElfQkFTSUMiLCJMT0NLRVJfUExBTiIsIlNFTkRJTkdfRU5URVJQUklTRV9QTEFOIiwiUE9TVEFMX0FQUF9QTEFOX0VDT01NRVJDRSIsIlBPU1RBTF9BUFBfUExBTl9FQ09NTUVSQ0VfQkFTSUMiLCJQSVRORVlTSElQIiwiUElUTkVZU0hJUF8zMERBWV9UUklBTCJdLCJwcmRJZCI6Imhvcml6b24ifX0.aZ5YEyulc10SgM2g1edHQVEOTggd9J7ug83Sy6oeWLVfjY9aYhha50sUFxhhTE7y0JmX1BhWUS4PZXHNx6riRPWjLh3AG-XupVTSvnNJZa9447vzdVkmmofs0-t74Mu7FES666y0GWfeYNuL3BRGyURtmVwypfOgzdRxDGI4yfOnJHLKeRUnUcP1cYj0nBobv2NOc99xyG40pnWGrRdKriBjaktwIQ0LA78uW32ObYi1glPBVRkM50pBKNPC93qXI-6GI-9ZPFtIhcWS2Bp_BivjsTeYom-d5ptI53u7plHKO7EcEm2NyRRMYC2ABGXzAKoWI1rV_1HaWspzJm3wCg"
+					},
+					{
+						"key": "X-PB-Developer-Partner-Id",
+						"value": ""
+					}
+				],
+				"url": {
+					"raw": "https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/shipments/USPS2200723913676317/cancel",
+					"protocol": "https",
+					"host": [
+						"api-dev",
+						"sendpro360",
+						"pitneycloud",
+						"com"
+					],
+					"path": [
+						"shipping",
+						"api",
+						"v1",
+						"shipments",
+						"USPS2200723913676317",
+						"cancel"
+					]
+				},
+				"description": "Generated from cURL: curl -i -X PUT \\\n  https://api-dev.sendpro360.pitneycloud.com/shipping/api/v1/shipments/USPS2200723913676317/cancel \\\n  -H 'Authorization: Bearer <YOUR_TOKEN_HERE>' \\\n  -H 'X-PB-Developer-Partner-Id: string'"
+			},
+			"response": []
+		}
+	]
+}
