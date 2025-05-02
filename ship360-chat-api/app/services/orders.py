@@ -9,9 +9,9 @@ logger = logging.getLogger(__name__)
 class OrderService:
     """Service to handle operations on mock customer orders data."""
     
-    def __init__(self, orders_file_path: str = None):
+    def __init__(self):
         """Initialize the order service with data from orders.json. We can generecize this if needed, but leaving it as orders.json for now."""
-        self.orders_file_path = orders_file_path or os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'orders.json')
+        self.orders_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'orders.json')
         self.orders_by_number: Dict[str, Dict[str, Any]] = {}
         self.load_orders()
     
