@@ -8,6 +8,22 @@ import logging
 from app.services.azure_openai import OpenAIService
 from app.utils.helpers import format_response, format_error
 from app.services.orders import OrderService
+from app.plugins.shipping_plugin import ShippingPlugin
+
+from semantic_kernel import Kernel
+from semantic_kernel.utils.logging import setup_logging
+from semantic_kernel.functions import kernel_function
+from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
+from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoiceBehavior
+from semantic_kernel.connectors.ai.chat_completion_client_base import ChatCompletionClientBase
+from semantic_kernel.contents.chat_history import ChatHistory
+from semantic_kernel.functions.kernel_arguments import KernelArguments
+
+from semantic_kernel.connectors.ai.open_ai.prompt_execution_settings.azure_chat_prompt_execution_settings import (
+    AzureChatPromptExecutionSettings,
+)
+
+from app.core.config import settings
 
 router = APIRouter(tags=["Chat"])
 
@@ -59,22 +75,64 @@ async def stream_chat_response(
 
 @router.post("/chat")
 async def process_chat(
-    request: ChatRequest,
-    openai_service: OpenAIService = Depends(OpenAIService),
-    order_service: OrderService = Depends(OrderService)
+    request: ChatRequest
 ):
     """
-    Process a chat request using Semantic Kernel Agents.
-    Returns a streaming response of agent processing and final results.
+    Process a chat request using a Semantic Kernel Plugin.
     """
     try:
         logger.info(f"Processing chat request for user {request.userId}, session {request.sessionId}")
         
+        # Initialize the kernel
+        kernel = Kernel()
+
+        # Add Azure OpenAI chat completion
+        chat_completion = AzureChatCompletion(
+            deployment_name=settings.AZURE_OPENAI_CHAT_DEPLOYMENT_NAME,
+            api_key=settings.AZURE_OPENAI_API_KEY,
+            base_url=settings.AZURE_OPENAI_ENDPOINT
+        )
+
+        kernel.add_service(chat_completion)
+        
+        # Set the logging level for  semantic_kernel.kernel to DEBUG.
+        setup_logging()
+        logging.getLogger("kernel").setLevel(logging.DEBUG)
+
+        # Instantiate the plugin
+        order_service: OrderService = Depends(OrderService)
+        shipping_plugin_instance = ShippingPlugin(order_service=order_service)
+
+        kernel.add_plugin(
+            shipping_plugin_instance,
+            plugin_name="ShippingPlugin",
+        )
+
+        # Enable planning
+        execution_settings = AzureChatPromptExecutionSettings()
+        execution_settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
+
+        # Create a history of the conversation
+        history = ChatHistory()
+
+        # Add user input to the history
+        history.add_user_message(request.user_prompt)
+
+        # Get the response from the AI
+        result = await chat_completion.get_chat_message_content(
+            chat_history=history,
+            settings=execution_settings,
+            kernel=kernel,
+        )
+
+        # Add the message from the agent to the chat history
+        history.add_message(result)
+
         return StreamingResponse(
-            stream_chat_response(request, openai_service),
+            stream_chat_response(request, openai_service=OpenAIService()),
             media_type="text/event-stream"
         )
-        
+
     except Exception as e:
         logger.error(f"Error processing chat: {str(e)}")
         raise HTTPException(
