@@ -23,6 +23,11 @@ class Settings(BaseSettings):
     AZURE_OPENAI_API_VERSION: str = "2024-08-01-preview"
     AZURE_OPENAI_CHAT_DEPLOYMENT_NAME: str
 
+    # Ship 360 API
+    SP360_TOKEN_URL: str
+    SP360_TOKEN_USERNAME: str
+    SP360_TOKEN_PASSWORD: str
+
     # Semantic Kernel agent configurations
     MASTER_AGENT_DEPLOYMENT: str
     INTENT_AGENT_DEPLOYMENT: str
