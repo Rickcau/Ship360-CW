@@ -34,6 +34,7 @@ class OrderService:
         """Get an order by its order number"""
         return self.orders_by_number.get(order_number)
 
+# Implement this class as a singleton to ensure only one instance is created and used throughout the application.
 @lru_cache(maxsize=1)
 def get_order_service() -> OrderService:
     """Get a singleton instance of the OrderService"""
