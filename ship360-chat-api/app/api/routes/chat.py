@@ -95,7 +95,7 @@ class ChatResponse(BaseModel):
  #           detail=f"Chat processing error: {str(e)}"
  #       )
 
-@router.post("/chat/sync", response_model=ChatResponse)
+@router.post("/chat/sync", response_model=str)
 async def process_chat_sync(
     request: ChatRequest,
     openai_service: OpenAIService = Depends(OpenAIService)
@@ -143,7 +143,8 @@ async def process_chat_sync(
         history.add_message(result)
 
         logger.info(f"Successfully processed chat for session {request.sessionId}")
-        return ChatResponse(result.content)
+ 
+        return result.content
         
     except Exception as e:
         logger.error(f"Error processing chat: {str(e)}")
