@@ -2,6 +2,7 @@
 import os
 import logging
 import httpx
+import warnings
 from typing import Dict, Any, List, Optional
 from app.core.config import settings
 
@@ -9,6 +10,11 @@ logger = logging.getLogger(__name__)
 
 class SearchService:
     def __init__(self):
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """Initialize the Azure AI Search service if configured"""
         # Check if search is configured
         if not hasattr(settings, "AZURE_SEARCH_SERVICE_ENDPOINT") or not settings.AZURE_SEARCH_SERVICE_ENDPOINT:
@@ -22,8 +28,13 @@ class SearchService:
         self.api_key = settings.AZURE_SEARCH_API_KEY
         self.api_version = "2023-07-01-Preview"
         logger.info("Azure AI Search service initialized")
-        
+    
     async def search(self, query: str, top: int = 5) -> List[Dict[str, Any]]:
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """
         Search the Azure AI Search index if configured
         

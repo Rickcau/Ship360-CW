@@ -8,7 +8,7 @@ from app.core.config import settings
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="Chat API powered by Azure OpenAI and Semantic Kernel Agents",
+    description="Chat API powered by Azure OpenAI and Semantic Kernel Plugins",
     version="1.0.0",
     docs_url=None,  # Disable the default Swagger UI
 )
