@@ -32,7 +32,7 @@ class ShippingPlugin:
             return "Failed to retrieve bearer token."
         
         print (f"Bearer Token: {bearer_token}")
-        pass
+        return "Plugin successfully invoked."
     
     async def get_shipping_authorization(self):
         url = settings.SP360_TOKEN_URL
