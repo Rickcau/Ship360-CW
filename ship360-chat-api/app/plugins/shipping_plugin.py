@@ -18,7 +18,7 @@ class ShippingPlugin:
         
         self.order_service = order_service
 
-    @kernel_function(name="GetShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
+    @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
     async def create_shipping_label(
         self,
         order_id: Annotated[str, "The unique identifier for the order"]
