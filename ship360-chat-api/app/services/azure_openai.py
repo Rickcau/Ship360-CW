@@ -1,5 +1,6 @@
 import os
 import logging
+import warnings
 from typing import Any, AsyncIterable, Literal, Dict
 from pydantic import BaseModel
 
@@ -11,12 +12,17 @@ from semantic_kernel.contents import (
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 
 from app.core.config import settings
-
+from deprecated import deprecated
 logger = logging.getLogger(__name__)
 
 # region Response Format
 
 class ResponseFormat(BaseModel):
+    warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
     """A Response Format model to direct how the model should respond."""
     status: Literal["input_required", "completed", "error"] = "input_required"
     message: str
@@ -30,6 +36,11 @@ class OpenAIService:
     thread: ChatHistoryAgentThread = None
 
     def __init__(self):
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """Initialize the Azure OpenAI service with Semantic Kernel agents"""
         if not all([
             settings.AZURE_OPENAI_API_KEY,
@@ -130,6 +141,11 @@ class OpenAIService:
         chat_name: str,
         prompt: str
     ) -> Dict[str, str]:
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """Process a user prompt with all Semantic Kernel agents.
         
         Args:
@@ -164,6 +180,11 @@ class OpenAIService:
         chat_name: str,
         prompt: str
     ) -> AsyncIterable[Dict[str, Any]]:
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """Stream the response from the agents.
         
         Args:
@@ -214,6 +235,11 @@ class OpenAIService:
         yield self._get_agent_response(full_message)
 
     def _get_agent_response(self, message: str) -> Dict[str, Any]:
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """Extract the structured response from the agent's message content."""
         try:
             structured_response = ResponseFormat.model_validate_json(message)
@@ -237,6 +263,11 @@ class OpenAIService:
         }
 
     async def _ensure_thread_exists(self, session_id: str) -> None:
+        warnings.warn(
+            "Not being used in the current implementation.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         """Ensure the thread exists for the given session ID."""
         if self.thread is None or self.thread._thread_id != session_id:
             await self.thread.delete() if self.thread else None
