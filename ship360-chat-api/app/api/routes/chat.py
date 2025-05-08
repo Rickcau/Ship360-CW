@@ -97,8 +97,7 @@ class ChatResponse(BaseModel):
 
 @router.post("/chat/sync", response_model=str)
 async def process_chat_sync(
-    request: ChatRequest,
-    openai_service: OpenAIService = Depends(OpenAIService)
+    request: ChatRequest
 ):
     """
     Process a chat request synchronously using a Semantic Kernel Plugin.
