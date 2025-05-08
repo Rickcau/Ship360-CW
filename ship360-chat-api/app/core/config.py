@@ -29,11 +29,11 @@ class Settings(BaseSettings):
     SP360_TOKEN_PASSWORD: str
 
     # Semantic Kernel agent configurations
-    MASTER_AGENT_DEPLOYMENT: str
-    INTENT_AGENT_DEPLOYMENT: str
-    RATE_AGENT_DEPLOYMENT: str
-    LABEL_AGENT_DEPLOYMENT: str
-    TRACKING_AGENT_DEPLOYMENT: str
+    #MASTER_AGENT_DEPLOYMENT: str
+    #INTENT_AGENT_DEPLOYMENT: str
+    #RATE_AGENT_DEPLOYMENT: str
+    #LABEL_AGENT_DEPLOYMENT: str
+    #TRACKING_AGENT_DEPLOYMENT: str
     
     # Optional - Azure AI Search (uncomment if needed)
     # AZURE_SEARCH_SERVICE_ENDPOINT: Optional[str] = None
