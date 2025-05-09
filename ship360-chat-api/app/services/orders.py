@@ -19,10 +19,9 @@ class OrderService:
         """Load orders from the JSON file into memory. This will mock the database being used in production."""
         try:
             with open(self.orders_file_path, 'r') as file:
-                orders = json.load(file)
+                # the JSON file is setup as a dicionary with order numbers as keys and order details as values, so we can just load the file
+                self.orders_by_number = json.load(file)
                 
-            # Index orders by order number for fast lookups
-            self.orders_by_number = {order["orderNumber"]: order for order in orders}
             logger.info(f"Successfully loaded {len(self.orders_by_number)} orders")
         
         except Exception as e:

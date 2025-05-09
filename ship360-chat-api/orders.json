@@ -1,6 +1,5 @@
-[
-    {
-      "orderNumber": "1005101",
+{
+  "1005101": {
       "dateOfShipment": "2025-05-02",
       "fromAddress": {
         "addressLine1": "27 Waterview Dr",
@@ -37,8 +36,7 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005202",
+    "1005202": {
       "dateOfShipment": "2025-05-03",
       "fromAddress": {
         "addressLine1": "421 Broadway",
@@ -75,8 +73,7 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005303",
+    "1005303": {
       "dateOfShipment": "2025-05-05",
       "fromAddress": {
         "addressLine1": "789 Pine St",
@@ -113,8 +110,7 @@
       "parcelType": "BOX",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005404",
+    "1005404": {
       "dateOfShipment": "2025-05-06",
       "fromAddress": {
         "addressLine1": "123 Main St",
@@ -151,8 +147,7 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005505",
+    "1005505": {
       "dateOfShipment": "2025-05-07",
       "fromAddress": {
         "addressLine1": "555 Ocean Blvd",
@@ -189,8 +184,7 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005606",
+    "1005606": {
       "dateOfShipment": "2025-05-08",
       "fromAddress": {
         "addressLine1": "987 Elm St",
@@ -227,8 +221,7 @@
       "parcelType": "ENV",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005707",
+    "1005707": {
       "dateOfShipment": "2025-05-09",
       "fromAddress": {
         "addressLine1": "321 Canal St",
@@ -265,8 +258,7 @@
       "parcelType": "BOX",
       "isHazmat": true
     },
-    {
-      "orderNumber": "1005808",
+    "1005808": {
       "dateOfShipment": "2025-05-10",
       "fromAddress": {
         "addressLine1": "444 Woodward Ave",
@@ -303,8 +295,7 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005909",
+    "1005909": {
       "dateOfShipment": "2025-05-12",
       "fromAddress": {
         "addressLine1": "700 N 4th St",
@@ -341,8 +332,7 @@
       "parcelType": "PAK",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1006010",
+    "1006010": {
       "dateOfShipment": "2025-05-13",
       "fromAddress": {
         "addressLine1": "222 W Merchandise Mart Plaza",
@@ -379,4 +369,4 @@
       "parcelType": "PKG",
       "isHazmat": false
     }
-  ]
+}

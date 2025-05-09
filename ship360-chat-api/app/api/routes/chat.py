@@ -9,6 +9,7 @@ from app.services.azure_openai import OpenAIService
 from app.utils.helpers import format_response, format_error
 from app.plugins.shipping_plugin import ShippingPlugin
 from app.services.orders import OrderService
+from app.prompts import core_prompts
 
 from semantic_kernel import Kernel
 from semantic_kernel.utils.logging import setup_logging
@@ -129,7 +130,7 @@ async def process_chat_sync(
         execution_settings = AzureChatPromptExecutionSettings()
         execution_settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
                 
-        history = ChatHistory(system_message="You are responsible for shipping orders.")
+        history = ChatHistory(system_message=core_prompts.SYSTEM_PROMPT)
         history.add_user_message(request.user_prompt)
 
         # Get the response from the AI
