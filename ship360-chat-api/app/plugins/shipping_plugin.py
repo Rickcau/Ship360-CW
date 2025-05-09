@@ -18,6 +18,45 @@ class ShippingPlugin:
         
         self.order_service = order_service
 
+    @kernel_function(name="RateShop", description="Given an Order Id, return a list of shipping options using the maximum price and duration, if provided.")
+    async def perform_rate_shop(
+        self,
+        order_id: Annotated[str, "The unique identifier for the order"],
+        max_price: Annotated[float, "Maximum price for shipping options"] = 0.0,
+        max_duration: Annotated[int, "Maximum duration in days for shipping options"] = 0
+    ):
+        order = self.order_service.get_order(order_id)
+        if not order:
+            return f"Order with ID {order_id} not found."
+        
+        bearer_token = await self.get_shipping_authorization()
+        if not bearer_token:
+            return "Failed to retrieve bearer token."
+
+        # Extract just the access_token from the bearer token response        
+        token = bearer_token.get("access_token")
+
+        print (f"Bearer Token: {bearer_token}")
+
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "compactResponse": "true"            
+        }
+
+        # Call the rate shop API with the order details sent in the body
+        url = settings.SP360_RATE_SHOP_URL
+        response = requests.post(url, headers=headers, json=order)
+        
+        if response.status_code == 200:
+            shipping_options = response.json()
+            print(shipping_options)
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return f"Error: {response.status_code} - {response.text}"
+
+        return response.json()
+
     @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
     async def create_shipping_label(
         self,
