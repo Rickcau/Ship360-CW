@@ -2,15 +2,16 @@ import aiohttp
 from app.core.config import settings
 
 class Ship360Service:
-    async def get_shipping_authorization(self):
+    def __init__(self):
         # Validate required settings
         if not all([
-            settings.SP360_TOKEN_URL,
-            settings.SP360_TOKEN_USERNAME,
-            settings.SP360_TOKEN_PASSWORD
+            getattr(settings, "SP360_TOKEN_URL", None),
+            getattr(settings, "SP360_TOKEN_USERNAME", None),
+            getattr(settings, "SP360_TOKEN_PASSWORD", None)
         ]):
             raise ValueError("Required Ship 360 settings are missing")
-
+        
+    async def get_shipping_authorization(self):
         url = settings.SP360_TOKEN_URL
         auth = aiohttp.BasicAuth(settings.SP360_TOKEN_USERNAME, settings.SP360_TOKEN_PASSWORD)
         headers = {"Content-Type": "application/json"}
