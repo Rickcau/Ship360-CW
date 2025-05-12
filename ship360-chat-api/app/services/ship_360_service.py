@@ -24,3 +24,6 @@ class Ship360Service:
                 else:
                     print(f"Error: {response.status}")
                 return data
+            
+    async def perform_rate_shop(self, payload):
+        pass
