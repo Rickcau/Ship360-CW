@@ -1,5 +1,6 @@
 import requests
 from typing import Annotated, Any, AsyncIterable, Literal, Dict
+import enum
 from semantic_kernel import Kernel
 from semantic_kernel.functions import kernel_function
 from app.core.config import settings
@@ -8,6 +9,11 @@ from app.services.ship_360_service import Ship360Service
 
 order_service = OrderService()
 ship_360_service = Ship360Service()
+
+class ComparisonOperator(str, enum.Enum):
+    """Enum defining comparison operators for filtering shipping options."""
+    LESS_THAN = "less_than"
+    LESS_THAN_OR_EQUAL = "less_than_or_equal"
 
 class ShippingPlugin:
     def __init__(self, order_service: OrderService):
@@ -25,7 +31,8 @@ class ShippingPlugin:
         self,
         order_id: Annotated[str, "The unique identifier for the order"],
         max_price: Annotated[float, "Maximum price for shipping options"] = 0.0,
-        max_duration: Annotated[int, "Maximum duration in days for shipping options"] = 0
+        duration_value: Annotated[int, "Maximum duration in days for shipping options"] = 0,
+        duration_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
     ):
         order = self.order_service.get_order(order_id)
         if not order:
@@ -66,8 +73,11 @@ class ShippingPlugin:
                     shipping_options = [option for option in shipping_options if option.get("totalCarrierCharge", 0) <= max_price]
 
                 # filter options based on max duration specified by the user
+
+                comparison_op = ComparisonOperator(duration_operator)
+
                 final_options = []
-                if max_duration > 0:
+                if duration_value > 0:
                     for option in shipping_options:
                         # get the deliveryCommitment object where the min and max estimated number of days are
                         delivery_commitment = option.get("deliveryCommitment", {})
@@ -76,7 +86,8 @@ class ShippingPlugin:
                         min_days = int(delivery_commitment.get("minEstimatedNumberOfDays", 0))
                         max_days = int(delivery_commitment.get("maxEstimatedNumberOfDays", 0))
 
-                        if min_days <= max_duration or max_days <= max_duration:
+                        if (comparison_op == ComparisonOperator.LESS_THAN and (min_days < duration_value or max_days < duration_value)) or \
+                           (comparison_op == ComparisonOperator.LESS_THAN_OR_EQUAL and (min_days <= duration_value or max_days <= duration_value)):
                             final_options.append(option)
                 else:
                     final_options = shipping_options
@@ -87,12 +98,17 @@ class ShippingPlugin:
                 except ValueError:
                     print("Error sorting shipping options by price. Defaulting to original order.")
 
-                return final_options
+                return {
+                    "total_options": len(final_options), # original count before filtering
+                    "filtered_count": len(shipping_options), # count after filtering options
+                    "shippingOptions": final_options # final filtered shipping options
+                }
 
         else:
             print(f"Error: {response.status_code} - {response.text}")
-
-            return f"Error: {response.status_code} - {response.text}"
+            return {
+                "error": f"{response.status_code} - {response.text}"
+            }
 
     @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
     async def create_shipping_label(
