@@ -113,9 +113,9 @@ class ShippingPlugin:
     @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
     async def create_shipping_label(
         self,
-        order_id: Annotated[str, "The unique identifier for the order"],
-        carrier_account_id: Annotated[str, "The unique identifier for the carrier account"],
-        size: Annotated[str, "The size of the package"]
+        order_id: Annotated[str, "The unique identifier for the order."],
+        carrier_account_id: Annotated[str, "The unique identifier for the carrier account."],
+        size: Annotated[str, "The size of the printed label."]
     ):
         order = self.order_service.get_order(order_id)
         if not order:
