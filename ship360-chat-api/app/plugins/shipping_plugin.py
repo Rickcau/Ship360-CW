@@ -64,12 +64,7 @@ class ShippingPlugin:
                     "success": True,
                     "totalOptions": shipping_options,
                     "exactCount": len(shipping_options),
-                    "shippingOptions": shipping_options,
-                    "metadata": {
-                        "orderNumber": order_id,
-                        "responseContainsOnlyOptions": True,
-                        "optionsAreInRatesArray": True
-                    }
+                    "shippingOptions": shipping_options
                 }
             else:
                 print("Error: 'rates' field not found in the API response.")
@@ -77,11 +72,7 @@ class ShippingPlugin:
                     "success": True,
                     "totalOptions": 0,
                     "exactCount": 0,
-                    "shippingOptions": [],
-                    "metadata": {
-                        "orderNumber": order_id,
-                        "reason": "No rates array found in response"
-                    }
+                    "shippingOptions": []
                 }
         else:
             print(f"Error: {response.status_code} - {response.text}")
