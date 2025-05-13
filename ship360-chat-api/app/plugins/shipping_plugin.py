@@ -57,25 +57,41 @@ class ShippingPlugin:
             # Extract only the rates array which contains the shipping options
             if "rates" in api_response and isinstance(api_response["rates"], list):
                 shipping_options = api_response["rates"]
-                print(f"Shipping options: {shipping_options}")
 
-                # Return structured response with metadata to guide the LLM
-                return {
-                    "success": True,
-                    "totalOptions": shipping_options,
-                    "exactCount": len(shipping_options),
-                    "shippingOptions": shipping_options
-                }
-            else:
-                print("Error: 'rates' field not found in the API response.")
-                return {
-                    "success": True,
-                    "totalOptions": 0,
-                    "exactCount": 0,
-                    "shippingOptions": []
-                }
+                # filter out the 0 cost options
+                shipping_options = [option for option in shipping_options if option.get("totalCarrierCharge", 0) > 0]
+
+                # filter options based on max price specified by the user
+                if max_price > 0:
+                    shipping_options = [option for option in shipping_options if option.get("totalCarrierCharge", 0) <= max_price]
+
+                # filter options based on max duration specified by the user
+                final_options = []
+                if max_duration > 0:
+                    for option in shipping_options:
+                        # get the deliveryCommitment object where the min and max estimated number of days are
+                        delivery_commitment = option.get("deliveryCommitment", {})
+                        
+                        # get the min and max estimated number of days as integers
+                        min_days = int(delivery_commitment.get("minEstimatedNumberOfDays", 0))
+                        max_days = int(delivery_commitment.get("maxEstimatedNumberOfDays", 0))
+
+                        if min_days <= max_duration or max_days <= max_duration:
+                            final_options.append(option)
+                else:
+                    final_options = shipping_options
+
+                # sort by price in the event the user requested a certain number of options be returned which ends up being less than the total number of options available
+                try:
+                    final_options.sort(key=lambda x: float(x.get("totalCarrierCharge", 0)))
+                except ValueError:
+                    print("Error sorting shipping options by price. Defaulting to original order.")
+
+                return final_options
+
         else:
             print(f"Error: {response.status_code} - {response.text}")
+
             return f"Error: {response.status_code} - {response.text}"
 
     @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
