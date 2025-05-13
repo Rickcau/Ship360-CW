@@ -38,7 +38,7 @@ class ShippingPlugin:
         # Extract just the access_token from the bearer token response        
         token = bearer_token.get("access_token")
 
-        print (f"Bearer Token: {bearer_token}")
+        print(f"Bearer Token: {bearer_token}")
 
         headers = {
             "Authorization": f"Bearer {token}",
@@ -51,13 +51,41 @@ class ShippingPlugin:
         response = requests.post(url, headers=headers, json=order)
         
         if response.status_code == 200:
-            shipping_options = response.json()
-            print(shipping_options)
+            # Get the full API response
+            api_response = response.json()
+
+            # Extract only the rates array which contains the shipping options
+            if "rates" in api_response and isinstance(api_response["rates"], list):
+                shipping_options = api_response["rates"]
+                print(f"Shipping options: {shipping_options}")
+
+                # Return structured response with metadata to guide the LLM
+                return {
+                    "success": True,
+                    "totalOptions": shipping_options,
+                    "exactCount": len(shipping_options),
+                    "shippingOptions": shipping_options,
+                    "metadata": {
+                        "orderNumber": order_id,
+                        "responseContainsOnlyOptions": True,
+                        "optionsAreInRatesArray": True
+                    }
+                }
+            else:
+                print("Error: 'rates' field not found in the API response.")
+                return {
+                    "success": True,
+                    "totalOptions": 0,
+                    "exactCount": 0,
+                    "shippingOptions": [],
+                    "metadata": {
+                        "orderNumber": order_id,
+                        "reason": "No rates array found in response"
+                    }
+                }
         else:
             print(f"Error: {response.status_code} - {response.text}")
             return f"Error: {response.status_code} - {response.text}"
-
-        return response.json()
 
     @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
     async def create_shipping_label(
