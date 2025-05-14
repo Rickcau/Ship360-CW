@@ -115,7 +115,7 @@ class ShippingPlugin:
         self,
         order_id: Annotated[str, "The unique identifier for the order."],
         carrier_account_id: Annotated[str, "The unique identifier for the carrier account."],
-        size: Annotated[str, "The size of the printed label."]
+        size: Annotated[str, "The size of the printed shipping label."]
     ):
         order = self.order_service.get_order(order_id)
         if not order:
