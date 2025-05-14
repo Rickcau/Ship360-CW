@@ -7,11 +7,6 @@ class ComparisonOperator(str, enum.Enum):
     LESS_THAN_OR_EQUAL = "less_than_or_equal"
 
 class Ship360Service:
-    """
-    Service for interacting with Ship360 API, including token management with in-memory caching.
-    """
-
-
     def __init__(self):
         # Validate required settings
         if not all([
@@ -22,16 +17,6 @@ class Ship360Service:
             raise ValueError("Required Ship 360 settings are missing")
         
     async def get_sp360_token(self):
-        """
-        Retrieve a Ship360 access token, using in-memory caching to avoid unnecessary API calls.
-
-        - Returns the cached token if it exists and is valid (at least 30 seconds before expiration).
-        - Otherwise, fetches a new token from the API and updates the cache.
-        - The cache is class-level and safe for use in async contexts (single-process).
-        """
-        import time
-
-
         # Fetch a new token from the API
         url = settings.SP360_TOKEN_URL
         auth = aiohttp.BasicAuth(settings.SP360_TOKEN_USERNAME, settings.SP360_TOKEN_PASSWORD)
@@ -40,8 +25,10 @@ class Ship360Service:
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers=headers, auth=auth) as response:
                 data = await response.json()
-                if response.status == 200 and "access_token" in data and "expires_in" in data:
+                if response.status == 200 and "access_token" in data:
                     return data["access_token"]
+                else:
+                    print(f"Error: {response.status}")
                 return None
             
 
