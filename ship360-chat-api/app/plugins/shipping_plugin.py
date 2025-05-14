@@ -73,7 +73,6 @@ class ShippingPlugin:
                     shipping_options = [option for option in shipping_options if option.get("totalCarrierCharge", 0) <= max_price]
 
                 # filter options based on max duration specified by the user
-
                 comparison_op = ComparisonOperator(duration_operator)
 
                 final_options = []
@@ -98,6 +97,7 @@ class ShippingPlugin:
                 except ValueError:
                     print("Error sorting shipping options by price. Defaulting to original order.")
 
+                # return a structured JSON response so the LLM can use this to accurately respond to the user with the total options
                 return {
                     "total_options": len(final_options), # original count before filtering
                     "filtered_count": len(shipping_options), # count after filtering options
