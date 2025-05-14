@@ -14,9 +14,5 @@ venv/
 
 .env
 collections/**
-collections/Shipping APIs/Shipping APIs/RateShop.bru
 .vscode/settings.json
-.github/copilot-instructions.md
-.github/prompts/generate_design.md
-.github/prompts/thinking.md
-.github/prompts/repositorystructure.md
+.github/*
