@@ -1,5 +1,10 @@
 import aiohttp
+import enum
 from app.core.config import settings
+
+class ComparisonOperator(str, enum.Enum):
+    LESS_THAN = "less_than"
+    LESS_THAN_OR_EQUAL = "less_than_or_equal"
 
 class Ship360Service:
     """
@@ -39,11 +44,6 @@ class Ship360Service:
                     return data["access_token"]
                 return None
             
-    import enum
-
-    class ComparisonOperator(str, enum.Enum):
-        LESS_THAN = "less_than"
-        LESS_THAN_OR_EQUAL = "less_than_or_equal"
 
     async def perform_rate_shop(
         self,
