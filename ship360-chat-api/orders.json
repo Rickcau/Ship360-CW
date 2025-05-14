@@ -1,7 +1,6 @@
-[
-    {
-      "orderNumber": "1005101",
-      "dateOfShipment": "2025-05-02",
+{
+  "1005101": {
+      "dateOfShipment": "2025-05-13",
       "fromAddress": {
         "addressLine1": "27 Waterview Dr",
         "cityTown": "Danbury",
@@ -37,9 +36,8 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005202",
-      "dateOfShipment": "2025-05-03",
+    "1005202": {
+      "dateOfShipment": "2025-05-13",
       "fromAddress": {
         "addressLine1": "421 Broadway",
         "cityTown": "New York",
@@ -75,9 +73,8 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005303",
-      "dateOfShipment": "2025-05-05",
+    "1005303": {
+      "dateOfShipment": "2025-05-15",
       "fromAddress": {
         "addressLine1": "789 Pine St",
         "cityTown": "Seattle",
@@ -113,9 +110,8 @@
       "parcelType": "BOX",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005404",
-      "dateOfShipment": "2025-05-06",
+    "1005404": {
+      "dateOfShipment": "2025-05-16",
       "fromAddress": {
         "addressLine1": "123 Main St",
         "cityTown": "Austin",
@@ -151,9 +147,8 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005505",
-      "dateOfShipment": "2025-05-07",
+    "1005505": {
+      "dateOfShipment": "2025-05-17",
       "fromAddress": {
         "addressLine1": "555 Ocean Blvd",
         "cityTown": "Miami",
@@ -189,9 +184,8 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005606",
-      "dateOfShipment": "2025-05-08",
+    "1005606": {
+      "dateOfShipment": "2025-05-18",
       "fromAddress": {
         "addressLine1": "987 Elm St",
         "cityTown": "Boston",
@@ -227,9 +221,8 @@
       "parcelType": "ENV",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005707",
-      "dateOfShipment": "2025-05-09",
+    "1005707": {
+      "dateOfShipment": "2025-05-19",
       "fromAddress": {
         "addressLine1": "321 Canal St",
         "cityTown": "New Orleans",
@@ -265,9 +258,8 @@
       "parcelType": "BOX",
       "isHazmat": true
     },
-    {
-      "orderNumber": "1005808",
-      "dateOfShipment": "2025-05-10",
+    "1005808": {
+      "dateOfShipment": "2025-05-20",
       "fromAddress": {
         "addressLine1": "444 Woodward Ave",
         "cityTown": "Detroit",
@@ -303,9 +295,8 @@
       "parcelType": "PKG",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1005909",
-      "dateOfShipment": "2025-05-12",
+    "1005909": {
+      "dateOfShipment": "2025-05-21",
       "fromAddress": {
         "addressLine1": "700 N 4th St",
         "cityTown": "Philadelphia",
@@ -341,9 +332,8 @@
       "parcelType": "PAK",
       "isHazmat": false
     },
-    {
-      "orderNumber": "1006010",
-      "dateOfShipment": "2025-05-13",
+    "1006010": {
+      "dateOfShipment": "2025-05-22",
       "fromAddress": {
         "addressLine1": "222 W Merchandise Mart Plaza",
         "cityTown": "Chicago",
@@ -379,4 +369,4 @@
       "parcelType": "PKG",
       "isHazmat": false
     }
-  ]
+}
