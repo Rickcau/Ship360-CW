@@ -183,11 +183,6 @@ class Ship360Service:
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, json=order) as response:
-                if response.status == 200:
-                    api_response = await response.json()
-
-        async with aiohttp.ClientSession() as session:
             async with session.post(
                 url,
                 headers=headers,
