@@ -33,7 +33,6 @@ class Ship360Service:
                 else:
                     print(f"Error: {response.status}")
                 return None
-            
 
     async def perform_rate_shop(
         self,
