@@ -1,8 +1,6 @@
-import json
 import aiohttp
 import enum
 import app.models.create_shipping_label_request as create_shipping_label_request
-import app.models.create_shipping_label_response as create_shipping_label_response
 from app.core.config import settings
 
 class ComparisonOperator(str, enum.Enum):
