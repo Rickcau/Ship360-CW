@@ -46,20 +46,19 @@ class ShippingPlugin:
             duration_operator=duration_operator
         )
 
-    @kernel_function(name="GenerateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
+    @kernel_function(name="CreateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
     async def create_shipping_label(
         self,
         order_id: Annotated[str, "The unique identifier for the order."],
         carrier_account_id: Annotated[str, "The unique identifier for the carrier account."],
-        size: Annotated[str, "The size of the printed shipping label."]
+        shipping_label_size: Annotated[str, "The size of the printed shipping label."]
     ):
         order = self.order_service.get_order(order_id)
         if not order:
             return f"Order with ID {order_id} not found."
-        
-        bearer_token = await ship_360_service.get_sp360_token()
-        if not bearer_token:
-            return "Failed to retrieve bearer token."
-        
-        print (f"Bearer Token: {bearer_token}")
-        return "Plugin successfully invoked."
+
+        return await ship_360_service.create_shipment_domestic(
+                order=order,
+                carrier_account_id=carrier_account_id,
+                shipping_label_size=shipping_label_size
+            )
