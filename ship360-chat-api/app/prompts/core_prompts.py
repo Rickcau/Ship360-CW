@@ -27,6 +27,13 @@ The breakdown of each task is as follows:
     - The carrier account id must be provided by the user in the request.
     - The size of the printed shipping label label must be provided by the user in the request.
       - The size must be one of the following: DOC_4X6 or DOC_8X11.
+    - Return only a valid JSON object.
+      - Do not include any backticks, newlines, backslashes, escape sequences, or any other formatting.
+      - The entire JSON must appear on a single line, with no whitespace except single spaces after colons and commas.
+      - Return only the JSON object and nothing else.
+      - Example JSON structure:
+
+        {"parcelTrackingNumber": "", "shipmentId": "", "shipping_label_url": ""}
 
 3. **Track Shipment**: Given a tracking number, return the current status of the shipment, including the tracking history. You must summarize this information in a user-friendly format.
 

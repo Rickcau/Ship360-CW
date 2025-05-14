@@ -1,6 +1,8 @@
+import json
 import aiohttp
 import enum
 import app.models.create_shipping_label_request as create_shipping_label_request
+import app.models.create_shipping_label_response as create_shipping_label_response
 from app.core.config import settings
 
 class ComparisonOperator(str, enum.Enum):
@@ -125,7 +127,7 @@ class Ship360Service:
             size=shipping_label_size,
             type="SHIPPING_LABEL",
             fromAddress=create_shipping_label_request.Address(
-                company="PB",
+                company="PB", # TODO
                 addressLine1=order["fromAddress"]["addressLine1"],
                 addressLine2="",
                 addressLine3="",
@@ -149,12 +151,12 @@ class Ship360Service:
             serviceId="UGA",
             shipmentOptions=create_shipping_label_request.ShipmentOptions(
                 addToManifest=True,
-                packageDescription="test"
+                packageDescription="test" # TODO
             ),
             metadata=[
                 create_shipping_label_request.MetadataItem(
-                    name="costAccountName",
-                    value="cost account 123"
+                    name="costAccountName", # TODO
+                    value="cost account 123" # TODO
                 )
             ],
             toAddress=create_shipping_label_request.Address(
@@ -189,7 +191,6 @@ class Ship360Service:
                     api_response = await response.json()
 
         async with aiohttp.ClientSession() as session:
-            # Create the shipping labe
             async with session.post(
                 url,
                 headers=headers,
@@ -197,9 +198,10 @@ class Ship360Service:
             ) as response:
                 if response.status == 200:
                     api_response = await response.json()
+                    print(api_response)
                     return api_response
                 # Non-200 response
                 error_text = await response.text()
                 return {
                     "error": f"{response.status} - {error_text}"
-                }   
+                }

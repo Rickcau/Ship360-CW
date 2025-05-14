@@ -57,8 +57,16 @@ class ShippingPlugin:
         if not order:
             return f"Order with ID {order_id} not found."
 
-        return await ship_360_service.create_shipment_domestic(
+        api_response = await ship_360_service.create_shipment_domestic(
                 order=order,
                 carrier_account_id=carrier_account_id,
                 shipping_label_size=shipping_label_size
             )
+        
+        data = {
+            "parcelTrackingNumber": api_response["parcelTrackingNumber"],
+            "shipmentId": api_response["shipmentId"],
+            "shipping_label_url": api_response["labelLayout"][0]["contents"]
+        }
+
+        return data
