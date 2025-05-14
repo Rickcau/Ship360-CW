@@ -10,11 +10,6 @@ from app.services.ship_360_service import Ship360Service
 order_service = OrderService()
 ship_360_service = Ship360Service()
 
-class ComparisonOperator(str, enum.Enum):
-    """Enum defining comparison operators for filtering shipping options."""
-    LESS_THAN = "less_than"
-    LESS_THAN_OR_EQUAL = "less_than_or_equal"
-
 class ShippingPlugin:
     def __init__(self, order_service: OrderService):
         if not all([
