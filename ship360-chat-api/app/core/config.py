@@ -23,10 +23,14 @@ class Settings(BaseSettings):
     AZURE_OPENAI_API_VERSION: str
     AZURE_OPENAI_CHAT_DEPLOYMENT_NAME: str
 
-    # Ship 360 API
+    # Ship 360 API Configuration
     SP360_TOKEN_URL: str
     SP360_TOKEN_USERNAME: str
     SP360_TOKEN_PASSWORD: str
+
+    # Ship 360 APIs
+    SP360_RATE_SHOP_URL: str
+    SP360_SHIPMENTS_URL: str
 
     # Semantic Kernel agent configurations
     #MASTER_AGENT_DEPLOYMENT: str
