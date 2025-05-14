@@ -114,7 +114,7 @@ async def process_chat_sync(
             api_key=settings.AZURE_OPENAI_API_KEY,
             base_url=url,
         )
-
+        
         kernel.add_service(chat_completion)
         
         # Set the logging level for  semantic_kernel.kernel to DEBUG.

@@ -13,4 +13,6 @@ venv/
 .DS_Store
 
 .env
-collections/
+collections/**
+.vscode/settings.json
+.github/*
