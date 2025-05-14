@@ -105,6 +105,7 @@ async def process_chat_sync(
     Returns a single response with the final result.
     """
     try:
+        #https://oai-bjake-self-learning.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview
         url = f"{settings.AZURE_OPENAI_ENDPOINT}/openai/deployments/{settings.AZURE_OPENAI_CHAT_DEPLOYMENT_NAME}/chat/completions?api-version={settings.AZURE_OPENAI_API_VERSION}"
         logger.info(f"Processing chat request for user {request.userId}, session {request.sessionId}")
         
@@ -114,8 +115,6 @@ async def process_chat_sync(
             api_key=settings.AZURE_OPENAI_API_KEY,
             base_url=url,
         )
-
-        kernel.add_service(chat_completion)
         
         # Set the logging level for  semantic_kernel.kernel to DEBUG.
         setup_logging()
