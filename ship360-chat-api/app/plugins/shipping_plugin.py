@@ -46,7 +46,7 @@ class ShippingPlugin:
             duration_operator=duration_operator
         )
 
-    @kernel_function(name="CreateShippingLabel", description="Create a shipping label for a given Order Id using the cheapest available carrier.")
+    @kernel_function(name="CreateShippingLabel", description="Create a shipping label for a given Order Id using the provided carrier account id and shipping label size.")
     async def create_shipping_label(
         self,
         order_id: Annotated[str, "The unique identifier for the order."],
