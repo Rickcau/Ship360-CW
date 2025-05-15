@@ -1,6 +1,6 @@
 import threading
 import time
-from typing import Tuple, Dict, Optional
+from typing import Tuple, Dict
 from semantic_kernel.agents import ChatHistoryAgentThread
 
 # Type alias for thread key
