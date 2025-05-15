@@ -1,5 +1,5 @@
 import requests
-from typing import Annotated, Any, AsyncIterable, Literal, Dict
+from typing import Annotated, Any, AsyncIterable, Literal, Dict, Optional, Union
 import enum
 from semantic_kernel import Kernel
 from semantic_kernel.functions import kernel_function
@@ -70,3 +70,116 @@ class ShippingPlugin:
         }
 
         return data
+
+    @kernel_function(name="GetTrackingDetails", description="Get tracking details for a given Tracking Number.")
+    async def get_tracking_details(
+        self,
+        tracking_number: Annotated[str, "The unique identifier for the tracking number."]
+    ):
+        
+        api_response = await ship_360_service.get_tracking_info(
+                tracking_number=tracking_number
+            )
+        
+        data = {
+            # From the top level of the response
+            "estimatedDeliveryDate": api_response.get("estimatedDeliveryDate"),
+            "serviceName": api_response.get("serviceName"),
+            
+            # From the currentStatus object
+            "carrierEventDescription": api_response.get("currentStatus", {}).get("carrierEventDescription"),
+            "eventDescription": api_response.get("currentStatus", {}).get("eventDescription"),
+            "status": api_response.get("currentStatus", {}).get("status"),
+            "eventDate": api_response.get("currentStatus", {}).get("eventDate"),
+            
+            # Include the full tracking history
+            "trackingHistory": api_response.get("trackingHistory", [])
+        }
+
+        return data
+    
+    @kernel_function(name="GetCurrentDate", description="Get the current date in YYYY-MM-DD format.")
+    async def get_current_date(self):
+        """
+        Returns the current date in YYYY-MM-DD format.
+        
+        This function can be called by GenAI when the current date is needed for operations
+        such as setting default date ranges or comparing with other dates.
+        
+        Returns:
+        A string representing the current date in YYYY-MM-DD format.
+        """
+        from datetime import datetime
+        
+        # Get the current date and format it as YYYY-MM-DD
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        
+        return {
+            "current_date": current_date
+        }
+    
+    @kernel_function(name="GetShipments", description="Get shipments with optional date filtering.")
+    async def get_shipments(
+        self,
+        current_date: Annotated[str, "The current date in YYYY-MM-DD format of today"],
+        startDate: Annotated[str, "Starting date in YYYY-MM-DD format (optional, leave empty for no filter)"] = "",
+        endDate: Annotated[str, "Ending date in YYYY-MM-DD format (optional, leave empty for no filter)"] = ""
+    ):
+        """
+        Get shipments with optional date filtering.
+        
+        Parameters:
+        - current_date: The current date in YYYY-MM-DD format.
+        - startDate: Optional starting date in YYYY-MM-DD format.
+        - endDate: Optional ending date in YYYY-MM-DD format.
+        
+        Returns:
+        A dictionary containing the filtered shipments and pagination info.
+        """
+        
+        # Validate date formats if provided
+        if not isinstance(startDate, str):
+            raise ValueError("startDate must be a string in YYYY-MM-DD format.")
+        if not isinstance(endDate, str):
+            raise ValueError("endDate must be a string in YYYY-MM-DD format.")
+            
+        # Build the query parameters for the API call
+        start_date_param = None
+        end_date_param = None
+        
+        # Only use date parameters if they are not empty
+        if startDate and startDate.strip():
+            start_date_param = startDate.strip()
+        if endDate and endDate.strip():
+            end_date_param = endDate.strip()
+        
+        # Make the API call to get shipments
+        api_response = await ship_360_service.get_shipments(
+            startDate=start_date_param,
+            endDate=end_date_param
+        )
+        
+        # Extract only the required fields from each shipment
+        filtered_shipments = []
+        for shipment in api_response.get("data", []):
+            # Get carrier from the first rate in rates array
+            carrier = None
+            total_carrier_charge = None
+            if shipment.get("rates") and len(shipment.get("rates")) > 0:
+                carrier = shipment["rates"][0].get("carrier")
+                total_carrier_charge = shipment["rates"][0].get("totalCarrierCharge")
+            
+            filtered_shipment = {
+                "shipmentId": shipment.get("shipmentId"),
+                "parcelTrackingNumber": shipment.get("parcelTrackingNumber"),
+                "carrier": carrier,
+                "toAddress": shipment.get("toAddress"),
+                "totalCarrierCharge": total_carrier_charge
+            }
+            filtered_shipments.append(filtered_shipment)
+        
+        # Return the filtered data with pagination info
+        return {
+            "data": filtered_shipments,
+            "pageInfo": api_response.get("pageInfo", {})
+        }
