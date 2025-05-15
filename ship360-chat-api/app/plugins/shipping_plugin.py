@@ -60,10 +60,27 @@ class ShippingPlugin:
                 shipping_label_size=shipping_label_size
             )
         
-        data = {
+        json_response = {
             "parcelTrackingNumber": api_response["parcelTrackingNumber"],
             "shipmentId": api_response["shipmentId"],
             "shipping_label_url": api_response["labelLayout"][0]["contents"]
         }
 
-        return data
+        return json_response
+    
+    @kernel_function(name="CancelShipment", description="Given a Shipment Id, cancel the shipment and return cancelation status.")
+    async def create_shipping_label(
+        self,
+        shipment_id: Annotated[str, "The Shipment Id."]
+    ):
+
+        api_response = await ship_360_service.cancel_shipment(shipment_id=shipment_id)
+        
+        json_response = {
+            "carrier": api_response["carrier"],
+            "totalCarrierCharge": api_response["totalCarrierCharge"],
+            "status": api_response["status"],
+            "parcelTrackingNumber": api_response["parcelTrackingNumber"]
+        }
+
+        return json_response

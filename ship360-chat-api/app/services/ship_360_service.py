@@ -197,3 +197,35 @@ class Ship360Service:
                 return {
                     "error": f"{response.status} - {error_text}"
                 }
+            
+    async def cancel_shipment(
+            self, 
+            shipment_id: str
+        ):
+
+        url = settings.SP360_SHIPMENTS_URL + f"/{shipment_id}/cancel"
+        bearer_token = await self.get_sp360_token()
+        
+        if not bearer_token:
+            return "Failed to retrieve bearer token."
+        
+        headers = {
+            "Authorization": f"Bearer {bearer_token}",
+            "Content-Type": "application/json",
+            "compactResponse": "true"
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.put(
+                url,
+                headers=headers
+            ) as response:
+                if response.status == 200:
+                    api_response = await response.json()
+                    print(api_response)
+                    return api_response
+                # Non-200 response
+                error_text = await response.text()
+                return {
+                    "error": f"{response.status} - {error_text}"
+                }
