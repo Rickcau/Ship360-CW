@@ -1,31 +1,22 @@
 from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional, Dict, Any, AsyncIterator
-import json
+from typing import Dict, Any
 import logging
 from app.core.config import settings
-from app.services.azure_openai import OpenAIService
-from app.utils.helpers import format_response, format_error
 from app.plugins.shipping_plugin import ShippingPlugin
 from app.services.orders import OrderService
 from app.prompts import core_prompts
 from app.services.thread_store import thread_store
-from semantic_kernel.agents import ChatHistoryAgentThread
 
 from semantic_kernel import Kernel
 from semantic_kernel.utils.logging import setup_logging
-from semantic_kernel.functions import kernel_function
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoiceBehavior
-from semantic_kernel.connectors.ai.chat_completion_client_base import ChatCompletionClientBase
 from semantic_kernel.contents.chat_history import ChatHistory
-from semantic_kernel.functions.kernel_arguments import KernelArguments
 
 from semantic_kernel.connectors.ai.open_ai.prompt_execution_settings.azure_chat_prompt_execution_settings import (
     AzureChatPromptExecutionSettings,
 )
-import requests
 router = APIRouter(tags=["Chat"])
 
 logger = logging.getLogger(__name__)
@@ -141,13 +132,9 @@ async def process_chat_sync(
 
         # Defensive: ensure thread.history exists
         if not hasattr(thread, "history") or thread.history is None:
-            from semantic_kernel.contents.chat_history import ChatHistory
             thread.history = ChatHistory()
-        
-        # If thread is new (no messages), add system prompt
-        if not getattr(thread.history, "messages", None):
             thread.history.add_system_message(core_prompts.SYSTEM_PROMPT)
-
+        
         # Add user message to thread
         thread.history.add_user_message(request.user_prompt)
 
