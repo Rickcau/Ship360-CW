@@ -5,6 +5,9 @@ from fastapi.openapi.utils import get_openapi
 
 from app.api.routes import chat
 from app.core.config import settings
+from app.services.thread_store import thread_store
+import threading
+import time
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -49,6 +52,17 @@ async def get_open_api_endpoint():
 async def health_check():
     """Health check endpoint"""
     return {"status": "ok", "message": "Service is running"}
+
+# Background thread for cleaning up stale chat threads
+def cleanup_worker(interval_seconds: int = 600):
+    while True:
+        time.sleep(interval_seconds)
+        thread_store.cleanup_threads()
+
+@app.on_event("startup")
+def start_cleanup_thread():
+    t = threading.Thread(target=cleanup_worker, args=(600,), daemon=True)
+    t.start()
 
 if __name__ == "__main__":
     import uvicorn

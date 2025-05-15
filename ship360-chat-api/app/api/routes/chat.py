@@ -10,6 +10,8 @@ from app.utils.helpers import format_response, format_error
 from app.plugins.shipping_plugin import ShippingPlugin
 from app.services.orders import OrderService
 from app.prompts import core_prompts
+from app.services.thread_store import thread_store
+from semantic_kernel.agents import ChatHistoryAgentThread
 
 from semantic_kernel import Kernel
 from semantic_kernel.utils.logging import setup_logging
@@ -107,16 +109,16 @@ async def process_chat_sync(
     try:
         url = f"{settings.AZURE_OPENAI_ENDPOINT}/openai/deployments/{settings.AZURE_OPENAI_CHAT_DEPLOYMENT_NAME}/chat/completions?api-version={settings.AZURE_OPENAI_API_VERSION}"
         logger.info(f"Processing chat request for user {request.userId}, session {request.sessionId}")
-        
+
         kernel = Kernel()
-        
+
         chat_completion = AzureChatCompletion(
             api_key=settings.AZURE_OPENAI_API_KEY,
             base_url=url,
         )
-        
+
         kernel.add_service(chat_completion)
-        
+
         # Set the logging level for  semantic_kernel.kernel to DEBUG.
         setup_logging()
         logging.getLogger("kernel").setLevel(logging.DEBUG)
@@ -129,23 +131,49 @@ async def process_chat_sync(
         # Enable planning
         execution_settings = AzureChatPromptExecutionSettings()
         execution_settings.function_choice_behavior = FunctionChoiceBehavior.Auto()
-                
-        history = ChatHistory(system_message=core_prompts.SYSTEM_PROMPT)
-        history.add_user_message(request.user_prompt)
 
-        # Get the response from the AI
+        # --- Multi-turn conversation history logic ---
+        user_id = request.userId
+        session_id = request.sessionId
+
+        # Retrieve or create thread for this user/session
+        thread = thread_store.get_thread(user_id, session_id)
+
+        # Defensive: ensure thread.history exists
+        if not hasattr(thread, "history") or thread.history is None:
+            from semantic_kernel.contents.chat_history import ChatHistory
+            thread.history = ChatHistory()
+        
+        # If thread is new (no messages), add system prompt
+        if not getattr(thread.history, "messages", None):
+            thread.history.add_system_message(core_prompts.SYSTEM_PROMPT)
+
+        # Add user message to thread
+        thread.history.add_user_message(request.user_prompt)
+
+        # Print out the thread history before model call
+        thread_history_log = ["--- Thread history before LLM call ---"]
+        for i, msg in enumerate(thread.history.messages):
+            thread_history_log.append(f"{i+1}. [{msg.role}] {msg.content!r}")
+        logger.info("\n".join(thread_history_log))
+
+        # Get the response from the AI, passing the full thread history
         result = await chat_completion.get_chat_message_content(
-            chat_history=history,
+            chat_history=thread.history,
             settings=execution_settings,
             kernel=kernel,
         )
 
-        history.add_message(result)
+        # Add assistant response to thread
+        thread.history.add_assistant_message(result.content)
+
+        # Update thread in store (refreshes last access)
+        thread_store.update_thread(user_id, session_id, thread)
 
         logger.info(f"Successfully processed chat for session {request.sessionId}")
- 
+
         return result.content
-        
+
     except Exception as e:
         logger.error(f"Error processing chat: {str(e)}")
         raise HTTPException(
