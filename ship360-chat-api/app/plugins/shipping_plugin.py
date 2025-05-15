@@ -1,7 +1,4 @@
-import requests
-from typing import Annotated, Any, AsyncIterable, Literal, Dict
-import enum
-from semantic_kernel import Kernel
+from typing import Annotated
 from semantic_kernel.functions import kernel_function
 from app.core.config import settings
 from app.services.orders import OrderService
