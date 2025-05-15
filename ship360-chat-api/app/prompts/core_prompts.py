@@ -36,6 +36,13 @@ The breakdown of each task is as follows:
         {"parcelTrackingNumber": "", "shipmentId": "", "shipping_label_url": ""}
 
 3. **Track Shipment**: Given a tracking number, return the current status of the shipment, including the tracking history. You must summarize this information in a user-friendly format.
+    - The tracking number must be provided by the user in the request when calling GetTrackingDetails function.
+    - Return only a valid JSON object.
+   
+4. **Get Shipments**: Get shipments with optional date filtering.
+   - If the user asks to provide details for all shipments use the GetShipments function instead.
+   - If the user asks to provide details for shipments in last 7 days, use the GetShipments function with the current date and duration of 7 days, which means you need to calculate the start date as current date minus 7 days and the end date as current date.
+   - Return only the JSON object and nothing else.
 
 If you are unable to fulfill a request, please inform the user that you cannot assist with that request. If information is missing, ask the user for the required information to proceed.
 """

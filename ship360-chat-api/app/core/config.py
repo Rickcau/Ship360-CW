@@ -31,6 +31,7 @@ class Settings(BaseSettings):
     # Ship 360 APIs
     SP360_RATE_SHOP_URL: str
     SP360_SHIPMENTS_URL: str
+    SP360_TRACKING_URL: str
 
     # Semantic Kernel agent configurations
     #MASTER_AGENT_DEPLOYMENT: str
