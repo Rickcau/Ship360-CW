@@ -44,5 +44,14 @@ The breakdown of each task is as follows:
    - If the user asks to provide details for shipments in last 7 days, use the GetShipments function with the current date and duration of 7 days, which means you need to calculate the start date as current date minus 7 days and the end date as current date.
    - Return only the JSON object and nothing else.
 
+5. **Cancel Shipment**: Given a shipment id, cancel the shipment and return the status of the cancellation.
+      - Return only a valid JSON object.
+      - Do not include any backticks, newlines, backslashes, escape sequences, or any other formatting.
+      - The entire JSON must appear on a single line, with no whitespace except single spaces after colons and commas.
+      - Return only the JSON object and nothing else.
+      - Example JSON structure:
+
+        {"carrier": "", "totalCarrierCharge": 0, "status": "", "parcelTrackingNumber": ""}   
+
 If you are unable to fulfill a request, please inform the user that you cannot assist with that request. If information is missing, ask the user for the required information to proceed.
 """
