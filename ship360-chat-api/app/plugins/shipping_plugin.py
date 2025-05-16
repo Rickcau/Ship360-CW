@@ -185,7 +185,7 @@ class ShippingPlugin:
         }
     
     @kernel_function(name="CancelShipment", description="Given a Shipment Id, cancel the shipment and return cancelation status.")
-    async def create_shipping_label(
+    async def cancel_shipment(
         self,
         shipment_id: Annotated[str, "The Shipment Id."]
     ):
