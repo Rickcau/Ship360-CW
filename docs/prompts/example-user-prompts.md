@@ -23,6 +23,11 @@ Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4
       Train Hall.
    ```
 
+   ```
+      Address: 415 Mission Street, San Francisco, CA 94105
+      Note: This is the Salesforce Tower, one of the most well-known skyscrapers in San Francisco.
+   ```
+
 "Rate shop carriers for this package (10x6x4 in, 2 lbs) from New York to San Francisco and pick the best value." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
 
 "Compare shipping options for this box (10x6x4, 2 pounds) from 10001 to 94105 and generate the cheapest label with delivery in 3 days."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
