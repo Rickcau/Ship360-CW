@@ -16,3 +16,8 @@ venv/
 collections/**
 .vscode/settings.json
 .github/*
+
+# Large deployment ZIP files
+ship360-deploy.zip
+ship360-chat-api-deploy.zip
+*.zip
