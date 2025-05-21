@@ -5,6 +5,7 @@ I also add some notes and thoughts on the steps needed in order to ensure we can
 
 ## Prompts
 
+### Without Order
 Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4 inches from ZIP 10001 to 94105." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
 
 "Rate shop carriers for this package (10x6x4 in, 2 lbs) from New York to San Francisco and pick the best value." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
@@ -18,6 +19,7 @@ Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4
 
 "Find the best tracked option between USPS, UPS, and FedEx for this Atlanta to Seattle shipment and create the label."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)  (API requires dim, so need logic to deal with this)
 
+### With Order Number
 "Generate a shipping label for Order #2433232 with the fastest delivery option under $15."
 ( was working, but need more testing)  need to make sure all information is avail, otherwise ask for more info.
 
