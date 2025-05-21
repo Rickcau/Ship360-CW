@@ -8,6 +8,14 @@ I also add some notes and thoughts on the steps needed in order to ensure we can
 ### Without Order
 Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4 inches from ZIP 10001 to 94105." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
 
+#### Logic for this Prompt
+1. In order to get rates to ship to any destination we need the following details:
+- Package weight: weight units (e.g., pounds, kg), weight
+- Package dimensions: length, width, height dimension units (e.g., inches, cm)
+- Shipping origin: Address, city, state, and zip code
+- Shipping destination: Address, city, state, and zip code
+- Country Code: 2-letter country code (e.g., US, CA) give the user examples if needed
+
 "Rate shop carriers for this package (10x6x4 in, 2 lbs) from New York to San Francisco and pick the best value." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
 
 "Compare shipping options for this box (10x6x4, 2 pounds) from 10001 to 94105 and generate the cheapest label with delivery in 3 days."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
