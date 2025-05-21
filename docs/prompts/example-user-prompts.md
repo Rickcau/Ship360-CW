@@ -20,13 +20,13 @@ Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4
 "Find the best tracked option between USPS, UPS, and FedEx for this Atlanta to Seattle shipment and create the label."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)  (API requires dim, so need logic to deal with this)
 
 ### With Order Number
-"Generate a shipping label for Order #2433232 with the fastest delivery option under $15."
+"Generate a shipping label for Order **#2433232** with the fastest delivery option under $15."
 ( was working, but need more testing)  need to make sure all information is avail, otherwise ask for more info.
 
-"What’s the quickest shipping method under $15 for order #2433232? Print the label."
+"What’s the quickest shipping method under $15 for order **#2433232**? Print the label."
 Steps:  Confusing question for LLM, ned to make sure it asks for more details.
 
-"Label this order #2433232 with a carrier offering fast delivery and keeping cost below $15."
+"Label this order **#2433232** with a carrier offering fast delivery and keeping cost below $15."
 (carrier offering, LLM may not know these terms, so LLM needs to ask for more info until it understands.
 
 "Pick a shipping option under $15 with the soonest delivery date and generate a label for this order."
