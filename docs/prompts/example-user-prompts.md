@@ -8,6 +8,8 @@ I also add some notes and thoughts on the steps needed in order to ensure we can
 ### Without Order
 Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4 inches from ZIP 10001 to 94105." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
 
+**Update 5/21**: RDC system prompt is working as expect, once all details are provided, the SK function perform_rate_shop_without_order_id is called.  More work needs to be done to finish the logic, but basic flow for this prompt is working!
+
 #### Logic for this Prompt
 1. In order to get rates to ship to any destination we need the following details:
 - Package weight: weight units (e.g., pounds, kg), weight
