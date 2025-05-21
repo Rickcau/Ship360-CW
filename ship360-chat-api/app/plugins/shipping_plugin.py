@@ -11,7 +11,7 @@ order_service = OrderService()
 ship_360_service = Ship360Service()
 
 class ShippingPlugin:
-    def __init__(self, order_service: OrderService):
+    def __init__(self, order_service: OrderService, kernel: Kernel = None):
         if not all([
             settings.SP360_TOKEN_URL,
             settings.SP360_TOKEN_USERNAME,
@@ -20,6 +20,7 @@ class ShippingPlugin:
             raise ValueError("Required Ship 360 settings are missing")
         
         self.order_service = order_service
+        self.kernel = kernel
 
     @kernel_function(name="RateShop", description="Given an Order Id, return a list of shipping options using the maximum price and duration, if provided.")
     async def perform_rate_shop(
@@ -46,6 +47,110 @@ class ShippingPlugin:
             duration_operator=duration_operator
         )
 
+    # RDC Added 5/21/2025
+    @kernel_function(name="RateShop_Without_Order", description="Get shipping options without an order id.")
+    async def perform_rate_shop_without_order_id(
+        self,
+        user_prompt: Annotated[str, "The question the user is asking"]
+    ):
+        # Check if kernel is available
+        if not self.kernel:
+            return {"error": "Kernel is required for this operation."}
+        
+        # Define your prompt template with the JSON structure and additional logic
+        prompt_template = """
+        You are a shipping assistant. Extract shipping information from the user's request.
+        
+        User request: {{$input}}
+        
+        Based on the user's request, fill in the following JSON structure with any information you can extract.
+        For any fields that weren't mentioned or are unclear, leave them as empty strings or null values for numbers.
+        Use 'IN' for inches and 'OZ' for ounces as dimension and weight units, respectively, when applicable.
+        Default to 'US' for countryCode if not specified.
+        
+        REQUIRED INFORMATION:
+        - At minimum, you need:
+        1. A valid "fromAddress" with at least addressLine1, cityTown, postalCode, and stateProvince
+        2. A valid "toAddress" with at least addressLine1, cityTown, postalCode, and stateProvince
+        3. Parcel dimensions (length, width, height) and weight
+        
+        EVALUATION LOGIC:
+        - If any required information is missing, set "infoComplete" to false
+        - If all required information is present, set "infoComplete" to true
+        - In the "llmResponse" field:
+        * If information is missing: clearly explain what specific information is still needed
+        * If information is complete: provide a brief summary of the shipping request (origin, destination, package details)
+        
+        Please respond ONLY with the completed JSON object and nothing else:
+        
+        {
+            "fromAddress": {
+            "addressLine1": "",
+            "addressLine2": "",
+            "addressLine3": "",
+            "cityTown": "",
+            "company": "",
+            "countryCode": "",
+            "email": "",
+            "name": "",
+            "phone": "",
+            "postalCode": "",
+            "stateProvince": ""
+            },
+            "toAddress": {
+            "addressLine1": "",
+            "addressLine2": "",
+            "addressLine3": "",
+            "cityTown": "",
+            "company": "",
+            "countryCode": "",
+            "email": "",
+            "name": "",
+            "phone": "",
+            "postalCode": "",
+            "stateProvince": ""
+            },
+            "parcel": {
+                "dimUnit": "IN",
+                "length": null,
+                "width": null,
+                "height": null,
+                "weightUnit": "OZ",
+                "weight": null
+            },
+            "parcelType": "PKG",
+            "llmResponse": "",
+            "infoComplete": false
+        }
+        """
+        
+        # Set up context variables with the user's input
+        from semantic_kernel import ContextVariables
+        context_variables = ContextVariables(input=user_prompt)
+        
+        # Invoke the prompt
+        result = await self.kernel.invoke_prompt_async(
+            prompt_template,
+            context_variables,
+            service_id="your-azure-service-id"  # Use your configured service ID
+        )
+        
+        # The result should be a JSON string that you can parse
+        import json
+        try:
+            extracted_info = json.loads(str(result))
+            
+            # Check if information is complete
+            if extracted_info.get("infoComplete", False):
+                # If complete, proceed with rate shop
+                print("test")
+                # return await ship_360_service.perform_rate_shop_with_address_info(extracted_info)
+            else:
+                # If incomplete, return the extraction result with the message
+                return extracted_info
+        except json.JSONDecodeError:
+            return {"error": "Failed to parse the model's response as JSON."}
+    
     @kernel_function(name="CreateShippingLabel", description="Create a shipping label for a given Order Id using the provided carrier account id and shipping label size.")
     async def create_shipping_label(
         self,

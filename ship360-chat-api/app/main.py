@@ -2,12 +2,29 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, PlainTextResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+import logging
 
 from app.api.routes import chat
 from app.core.config import settings
 from app.services.thread_store import thread_store
 import threading
 import time
+import os
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+# Log startup information
+logger.info(f"Starting application with Python version: {os.sys.version}")
+logger.info(f"Current working directory: {os.getcwd()}")
+logger.info(f"PYTHONPATH: {os.environ.get('PYTHONPATH', 'Not set')}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -19,7 +36,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=["*"],  # Allow all origins for testing
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,6 +44,31 @@ app.add_middleware(
 
 # Include routers
 app.include_router(chat.router, prefix="/api")
+
+# Exception handlers for better error responses
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    logger.error(f"HTTP Exception: {exc.detail}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"message": exc.detail},
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    logger.error(f"Validation error: {exc}")
+    return JSONResponse(
+        status_code=422,
+        content={"message": "Validation error", "details": exc.errors()},
+    )
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request, exc):
+    logger.error(f"Unexpected error: {str(exc)}")
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal server error", "details": str(exc)},
+    )
 
 # Custom Swagger UI route
 @app.get("/docs", include_in_schema=False)
