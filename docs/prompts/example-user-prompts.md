@@ -15,6 +15,13 @@ Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4
 - Shipping origin: Address, city, state, and zip code
 - Shipping destination: Address, city, state, and zip code
 - Country Code: 2-letter country code (e.g., US, CA) give the user examples if needed
+2. The logic (system prompt) should detect these details are present and ask for them before doing anything.
+3. When the system asks for more details, you can use the following details to finish the interaction:
+   ```
+      Address: 421 8th Avenue, New York, NY 10001
+      Note: This is the James A. Farley Building, formerly the main United States Postal Service building in NYC, now redeveloped as part of the Moynihan 
+      Train Hall.
+   ```
 
 "Rate shop carriers for this package (10x6x4 in, 2 lbs) from New York to San Francisco and pick the best value." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
 
