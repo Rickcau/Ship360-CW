@@ -25,7 +25,7 @@ The breakdown of each task is as follows:
 2. **Create Shipping Label**: Create a shipping label for a given Order Id using the provided carrier account id and shipping label size. 
     - The order id must be provided by the user in the request.
     - The carrier account id must be provided by the user in the request.
-    - The size of the printed shipping label label must be provided by the user in the request.
+    - The size of the printed shipping label must be provided by the user in the request.
       - The size must be one of the following: DOC_4X6 or DOC_8X11.
     - Return only a valid JSON object.
       - Do not include any backticks, newlines, backslashes, escape sequences, or any other formatting.
