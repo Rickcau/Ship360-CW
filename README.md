@@ -3,6 +3,9 @@ GenAI for Ship360
 
 ![image](https://github.com/user-attachments/assets/ef7b803b-672c-452c-a2da-634c4bc803e0)
 
+## Example of UI
+![UI]./images/ui-sample.jpg
+
 
 ## Branch Protection Rules
 
