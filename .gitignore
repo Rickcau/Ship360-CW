@@ -1,3 +1,31 @@
+# Next.js build output
+.next/
+out/
+
+# Dependencies
+node_modules/
+ship360-ui/node_modules/
+
+# Environment variables
+.env
+.env*.local
+.venv
+venv/
+.DS_Store
+.
+collections/**
+.vscode/settings.json
+.github/*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE and editor files
+.idea/
+*.swp
+*.swo
+
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -5,14 +33,21 @@ build/
 dist/
 wheels/
 *.egg-info
+.cursorrules
+.next
 
-# Virtual environments
-.venv
-venv/
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
+# OS generated files
 .DS_Store
+Thumbs.db 
+certificates
 
-.env
-collections/**
-.vscode/settings.json
-.github/*
+
+# Large deployment ZIP files
+ship360-deploy.zip
+ship360-chat-api-deploy.zip
+*.zip
