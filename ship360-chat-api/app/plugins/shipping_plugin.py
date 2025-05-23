@@ -3,6 +3,7 @@ from typing import Annotated, Any, AsyncIterable, Literal, Dict, Optional, Union
 import enum
 from semantic_kernel import Kernel
 from semantic_kernel.functions import kernel_function
+from semantic_kernel.functions.kernel_arguments import KernelArguments
 from app.core.config import settings
 from app.services.orders import OrderService
 from app.services.ship_360_service import Ship360Service
@@ -125,8 +126,7 @@ class ShippingPlugin:
         """
         
         # Set up context variables with the user's input
-        from semantic_kernel import ContextVariables
-        context_variables = ContextVariables(input=user_prompt)
+        context_variables = KernelArguments(input=user_prompt)
         
         # Invoke the prompt
         result = await self.kernel.invoke_prompt_async(
