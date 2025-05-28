@@ -66,14 +66,15 @@ Same logic as the other prompts is needed., but logic needs to be add that allow
 "Find the best tracked option between USPS, UPS, and FedEx for this Atlanta to Seattle shipment and create the label."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)  (API requires dim, so need logic to deal with this)
 
 ### With Order Number
-"Generate a shipping label for Order **#2433232** with the fastest delivery option under $15."
-( was working, but need more testing)  need to make sure all information is avail, otherwise ask for more info.
+"Generate a shipping label for Order **#1005101** with the fastest delivery option under $15."
+( was working, but need more testing)  need to make sure all information is avail, otherwise ask for more info. This should 1) rate shop based on information from order and return the carrier id for the fastest delivery under $15. 2) Call create shipping label with this carrier id.
 
-"What’s the quickest shipping method under $15 for order **#2433232**? Print the label."
-Steps:  Confusing question for LLM, ned to make sure it asks for more details.
+"What’s the quickest shipping method under $15 for order **#1005101**? Print the label."
+Steps:  Confusing question for LLM, need to make sure it asks for more details. This should ask for the paper size, otherwise, it should choose the best option and then create the label.
 
-"Label this order **#2433232** with a carrier offering fast delivery and keeping cost below $15."
+"Label this order **#1005101** with a carrier offering fast delivery and keeping cost below $15."
 (carrier offering, LLM may not know these terms, so LLM needs to ask for more info until it understands.
+As expected, LLM will list the shipping options which are < $15 and end the response by asking: "Would you like to select one of these shipping options to create a shipping label? If so, please specify the option number.", which seems correct.
 
 "Pick a shipping option under $15 with the soonest delivery date and generate a label for this order."
 so again clarifying questions need to be asked when it's not clear what to do.  

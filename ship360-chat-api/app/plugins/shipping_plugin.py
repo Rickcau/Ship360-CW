@@ -51,6 +51,7 @@ class ShippingPlugin:
         self,
         order_id: Annotated[str, "The unique identifier for the order."],
         carrier_account_id: Annotated[str, "The unique identifier for the carrier account."],
+        service_id: Annotated[str, "The service id for the carrier account."],
         shipping_label_size: Annotated[str, "The size of the printed shipping label."]
     ):
         order = self.order_service.get_order(order_id)
@@ -60,6 +61,7 @@ class ShippingPlugin:
         api_response = await ship_360_service.create_shipment_domestic(
                 order=order,
                 carrier_account_id=carrier_account_id,
+                service_id=service_id,
                 shipping_label_size=shipping_label_size
             )
         
