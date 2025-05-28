@@ -1,17 +1,17 @@
-import requests
-from typing import Annotated, Any, AsyncIterable, Literal, Dict, Optional, Union
-import enum
+from typing import Annotated, Optional, Union
 from semantic_kernel import Kernel
 from semantic_kernel.functions import kernel_function
+from semantic_kernel.functions.kernel_arguments import KernelArguments
 from app.core.config import settings
 from app.services.orders import OrderService
 from app.services.ship_360_service import Ship360Service
+from app.models.rate_shop_models import RateShopRequest
 
 order_service = OrderService()
 ship_360_service = Ship360Service()
 
 class ShippingPlugin:
-    def __init__(self, order_service: OrderService):
+    def __init__(self, order_service: OrderService, kernel: Kernel = None):
         if not all([
             settings.SP360_TOKEN_URL,
             settings.SP360_TOKEN_USERNAME,
@@ -20,6 +20,7 @@ class ShippingPlugin:
             raise ValueError("Required Ship 360 settings are missing")
         
         self.order_service = order_service
+        self.kernel = kernel
 
     @kernel_function(name="RateShop", description="Given an Order Id, return a list of shipping options using the maximum price and duration, if provided.")
     async def perform_rate_shop(
@@ -27,7 +28,7 @@ class ShippingPlugin:
         order_id: Annotated[str, "The unique identifier for the order"],
         max_price: Annotated[float, "Maximum price for shipping options"] = 0.0,
         duration_value: Annotated[int, "Maximum duration in days for shipping options"] = 0,
-        duration_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
+        duration_comparison_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
     ):
         # Check for order_service dependency
         if not hasattr(self, "order_service") or self.order_service is None:
@@ -43,8 +44,142 @@ class ShippingPlugin:
             order=order,
             max_price=max_price,
             duration_value=duration_value,
-            duration_operator=duration_operator
+            duration_comparison_operator=duration_comparison_operator
         )
+
+    # RDC Added 5/21/2025
+    @kernel_function(name="RateShop_Without_Order", description="Get shipping options without an order id using the maximum price and duration, if provided.")
+    async def perform_rate_shop_without_order_id(
+        self,
+        user_prompt: Annotated[str, "The question the user is asking"],
+        max_price: Annotated[Optional[Union[float, str]], "Maximum price for shipping options"] = 0.0,
+        duration_value: Annotated[Optional[Union[int, str]], "Maximum duration in days for shipping options"] = 0,
+        duration_comparison_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
+    ):
+        # Check if kernel is available
+        if not self.kernel:
+            return {"error": "Kernel is required for this operation."}
+        
+        # Get the current date in YYYY-MM-DD format for the default value of the JSON structure
+        current_date = await self.get_current_date()
+
+        from semantic_kernel.connectors.ai.open_ai import OpenAIChatPromptExecutionSettings
+
+        request_settings = OpenAIChatPromptExecutionSettings(
+            service_id='default', max_tokens=2000, temperature=0.0, top_p=0.95, response_format={"type": "json_object"}
+        )
+        #request_settings.response_format = RateShopRequest
+        
+        # Define your prompt template with the JSON structure and additional logic
+        prompt_template = f"""
+        You are a specialized shipping information extractor. Extract ALL shipping details from the user's request.
+        
+        User request: {{{{$input}}}}
+        
+        Based on the user's request, fill in the following JSON structure with any information you can extract.
+        For any fields that weren't mentioned or are unclear, leave them as empty strings or null values for numbers.
+        Use 'IN' for inches, and 'LBS' for pounds and 'OZ' for ounces as dimension and weight units, respectively, when applicable.
+        Default to 'US' for countryCode if not specified. Default to current date in YYYY-MM-DD format for dateOfShipment, if not specified.
+
+        REQUIRED INFORMATION:
+        - A complete "fromAddress" (addressLine1, cityTown, postalCode, stateProvince)
+        - A complete "toAddress" (addressLine1, cityTown, postalCode, stateProvince)
+        - Complete parcel information (length, width, height, weight)
+        
+        EXTRACTION GUIDELINES:
+        1. FOR ADDRESSES:
+            - Look for patterns like "from [address]" and "to [address]"
+            - If you see a full address with street number, ALWAYS extract it as addressLine1
+            - Examples of addressLine1: "421 8th Avenue", "415 Mission Street", "123 Main St"
+            - If you see city, state, zip combinations, parse them separately
+            - NEVER leave addressLine1 empty if any street address is mentioned
+            - Country codes (default to "US" if not specified)
+            - IMPORTANT: If any address information is missing, set them to null and include a clear explanation in llmResponse
+        2. FOR PACKAGE INFORMATION:
+            - Dimensions in the format LxWxH (e.g., "10x6x4 in")
+            - Weight with units (e.g., "2 lbs")
+            - IMPORTANT: If any parcel dimensions or weight are missing, set them to null and include a clear explanation in llmResponse
+
+        VALIDATION CHECK:
+            - If you see a street address in the input but haven't extracted it, double-check your extraction
+            - For "infoComplete" to be true, BOTH addresses must have addressLine1, cityTown, stateProvince, postalCode AND parcel must have length, width, height, weight and unit
+
+        CURRENT DATE: {current_date}
+       
+        Do not include ```json or any other formatting in your response. Please respond ONLY with the completed JSON object and nothing else:
+        
+        {{
+            "fromAddress": {{
+                "addressLine1": "",
+                "addressLine2": "",
+                "addressLine3": "",
+                "cityTown": "",
+                "company": "",
+                "countryCode": "",
+                "email": "",
+                "name": "",
+                "phone": "",
+                "postalCode": "",
+                "stateProvince": ""
+            }},
+            "toAddress": {{
+                "addressLine1": "",
+                "addressLine2": "",
+                "addressLine3": "",
+                "cityTown": "",
+                "company": "",
+                "countryCode": "",
+                "email": "",
+                "name": "",
+                "phone": "",
+                "postalCode": "",
+                "stateProvince": ""
+            }},
+            "parcel": {{
+                "dimUnit": "IN",
+                "length": null,
+                "width": null,
+                "height": null,
+                "weightUnit": "OZ",
+                "weight": null
+            }},
+            "dateOfShipment": "",
+            "parcelType": "PKG",
+            "llmResponse": "",
+            "infoComplete": false
+        }}
+        """
+        
+        # Set up context variables with the user's input
+        context_variables = KernelArguments(input=user_prompt)
+        
+        # Invoke the prompt
+        result = await self.kernel.invoke_prompt(
+            prompt=prompt_template,
+            arguments=context_variables,
+            prompt_execution_settings=request_settings
+        )
+
+        # The result should be a JSON string that you can parse
+        import json
+        try:
+            extracted_info = json.loads(str(result))
+            
+            # Check if information is complete
+            if extracted_info.get("infoComplete", True):
+                # If complete, proceed with rate shop, but remove llmresponse and infoComplete fields
+                extracted_info.pop("llmResponse", None)
+                extracted_info.pop("infoComplete", None)
+
+                # Create the model instance - not being used for now since the service handles the json structure
+                #rate_shop_request = RateShopRequest(**extracted_info)
+
+                return await ship_360_service.perform_rate_shop(extracted_info, max_price, duration_value, duration_comparison_operator)
+            else:
+                # If incomplete, return the extraction result with the message
+                return extracted_info
+        except json.JSONDecodeError:
+            return {"error": "Failed to parse the model's response as JSON."}
 
     @kernel_function(name="CreateShippingLabel", description="Create a shipping label for a given Order Id using the provided carrier account id and shipping label size.")
     async def create_shipping_label(

@@ -3,7 +3,7 @@ import enum
 import app.models.create_shipping_label_request as create_shipping_label_request
 from app.core.config import settings
 
-class ComparisonOperator(str, enum.Enum):
+class DurationComparisonOperator(str, enum.Enum):
     LESS_THAN = "less_than"
     LESS_THAN_OR_EQUAL = "less_than_or_equal"
 
@@ -36,18 +36,18 @@ class Ship360Service:
 
     async def perform_rate_shop(
         self,
-        order: dict,
+        shipment_payload: dict,
         max_price: float = 0.0,
         duration_value: int = 0,
-        duration_operator: str = "less_than_or_equal"
+        duration_comparison_operator: str = "less_than_or_equal"
     ):
         """
         Refactored business logic for rate shopping.
         Args:
-            order (dict): The order object to process for rate shopping.
+            shipment_payload (dict): The shipment_payload JSON to process for rate shopping.
             max_price (float): Maximum price for shipping options.
             duration_value (int): Maximum duration in days for shipping options.
-            duration_operator (str): Comparison operator for duration.
+            duration_comparison_operator (str): Comparison operator for duration.
         Returns:
             dict: Result with shipping options or error.
         """
@@ -65,7 +65,7 @@ class Ship360Service:
         url = settings.SP360_RATE_SHOP_URL
 
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, headers=headers, json=order) as response:
+            async with session.post(url, headers=headers, json=shipment_payload) as response:
                 if response.status == 200:
                     api_response = await response.json()
                     if "rates" in api_response and isinstance(api_response["rates"], list):
@@ -82,7 +82,7 @@ class Ship360Service:
                                 if option.get("totalCarrierCharge", 0) <= max_price
                             ]
                         # filter options based on max duration specified by the user
-                        comparison_op = ComparisonOperator(duration_operator)
+                        comparison_op = DurationComparisonOperator(duration_comparison_operator)
                         final_options = []
                         if duration_value > 0:
                             for option in shipping_options:
@@ -90,9 +90,9 @@ class Ship360Service:
                                 min_days = int(delivery_commitment.get("minEstimatedNumberOfDays", 0))
                                 max_days = int(delivery_commitment.get("maxEstimatedNumberOfDays", 0))
                                 if (
-                                    (comparison_op == ComparisonOperator.LESS_THAN and (min_days < duration_value or max_days < duration_value))
+                                    (comparison_op == DurationComparisonOperator.LESS_THAN and (min_days < duration_value or max_days < duration_value))
                                     or
-                                    (comparison_op == ComparisonOperator.LESS_THAN_OR_EQUAL and (min_days <= duration_value or max_days <= duration_value))
+                                    (comparison_op == DurationComparisonOperator.LESS_THAN_OR_EQUAL and (min_days <= duration_value or max_days <= duration_value))
                                 ):
                                     final_options.append(option)
                         else:
