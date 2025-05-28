@@ -6,77 +6,37 @@ I also add some notes and thoughts on the steps needed in order to ensure we can
 ## Prompts
 
 ### Without Order
-Find the most cost-effective shipping option for a 2 lb package measuring 10x6x4 inches from ZIP 10001 to 94105." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
-
-**Update 5/21**: RDC system prompt is working as expect, once all details are provided, the SK function perform_rate_shop_without_order_id is called.  More work needs to be done to finish the logic, but basic flow for this prompt is working!
-
-#### Logic for this Prompt
-1. In order to get rates to ship to any destination we need the following details:
-- Package weight: weight units (e.g., pounds, kg), weight
-- Package dimensions: length, width, height dimension units (e.g., inches, cm)
-- Shipping origin: Address, city, state, and zip code
-- Shipping destination: Address, city, state, and zip code
-- Country Code: 2-letter country code (e.g., US, CA) give the user examples if needed
-2. The logic (system prompt) should detect these details are present and ask for them before doing anything.
-3. When the system asks for more details, you can use the following details to finish the interaction:
-   ```
-      Address: 421 8th Avenue, New York, NY 10001
-      Note: This is the James A. Farley Building, formerly the main United States Postal Service building in NYC, now redeveloped as part of the Moynihan 
-      Train Hall.
-   ```
-
-   ```
-      Address: 415 Mission Street, San Francisco, CA 94105
-      Note: This is the Salesforce Tower, one of the most well-known skyscrapers in San Francisco.
-   ```
+"Find the most cost-effective shipping option for a 2 oz package measuring 10x6x4 inches from ZIP 10001 to 94105." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
+Better to test with: Find the most cost-effective shipping option for a 2 oz package measuring 10x6x4 inches from 421 8th Avenue, New York, NY 10001, US to 415 Mission Street, San Francisco, CA 94105, US
 
 "Rate shop carriers for this package (10x6x4 in, 2 lbs) from New York to San Francisco and pick the best value." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
+Better to test with: Rate shop carriers for this package (10x6x4 in, 2 oz) from 421 8th Avenue, New York, NY 10001, US to 415 Mission Street, San Francisco, CA 94105 and pick the best value.
 
-**Update 5/21**: RDC system prompt is working as expect, once all details are provided, the SK function perform_rate_shop_without_order_id is called.  More work needs to be done to finish the logic, but basic flow for this prompt is working!
+"Compare shipping options for this box (10x6x4, 2 pounds) from 10001 to 94105 and generate the cheapest label with delivery in 3 days." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
+Better to test with: Compare shipping options for this box (10x6x4, 2 oz) from 421 8th Avenue, New York, NY 10001, US to 415 Mission Street, San Francisco, CA 94105 and generate the cheapest label with delivery in 3 days.
 
-#### Logic for this Prompt
-Same logic as above and since this is using New York and San Francisco, the same address info in the above example can be used.
+"What’s the best shipping method for a 2-pound box from ZIP 10001 to 94105 with a 3-day delivery limit?" "Compare FedEx, UPS, and USPS for a shipment from Atlanta to Seattle and use the cheapest one with tracking." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed) (API requires dim, so need logic to deal with this)
+Better to test with: What’s the best shipping method for a 2 oz box from 421 8th Avenue, New York, NY 10001, US to 415 Mission Street, San Francisco, CA 94105 with a 3-day delivery limit?
+You will then follow up with: The package is 10x6x4 inches.
 
-"Compare shipping options for this box (10x6x4, 2 pounds) from 10001 to 94105 and generate the cheapest label with delivery in 3 days."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)
+"Compare FedEx, UPS, and USPS for a shipment from 27 Waterview Dr, Danbury, CT 06811 US to 802 Rail Fence Rd, Orange, CT 06477 US and use the cheapest one with tracking."
 
-**Update 5/21**: RDC system prompt is working as expect, once all details are provided, the SK function perform_rate_shop_without_order_id is called.  More work needs to be done to finish the logic, but basic flow for this prompt is working!  We also need to add the filtering logic that Chris added.
+"Look up rates from FedEx, USPS, and UPS for shipping from Atlanta to Seattle - select the lowest with tracking." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed) (API requires dim, so need logic to deal with this)
+Better to test with: Look up rates from FedEx, USPS, and UPS for shipping from 27 Waterview Dr, Danbury, CT 06811 US to 802 Rail Fence Rd, Orange, CT 06477 US - select the lowest with tracking.
+Follow up with: The package is 10x6x4 inches weighing 6 oz.
 
-#### Logic for this Prompt
-1. In order to get rates to ship to any destination we need the following details:
-- Package weight: weight units (e.g., pounds, kg), weight
-- Package dimensions: length, width, height dimension units (e.g., inches, cm)
-- Shipping origin: Address, city, state, and zip code
-- Shipping destination: Address, city, state, and zip code
-- Country Code: 2-letter country code (e.g., US, CA) give the user examples if needed
-2. The logic (system prompt) should detect these details are present and ask for them before doing anything.
-3. When the system asks for more details, you can use the same address info in the above examples.
-4. When the rates are returned we will need to use the same filtering logic that Chris implemented for the Rate Shop using Order ID.
-
-"What’s the best shipping method for a 2-pound box from ZIP 10001 to 94105 with a 3-day delivery limit?" 
-
-**Update 5/21**: RDC system prompt is working as expect, once all details are provided, the SK function perform_rate_shop_without_order_id is called.  More work needs to be done to finish the logic, but basic flow for this prompt is working!  We also need to add the filtering logic that Chris added.
-
-#### Logic for this prompt
-Same logic as the other prompts is needed., but logic needs to be add that allows filter by 3-day limits.
-
-"Compare FedEx, UPS, and USPS for a shipment from Atlanta to Seattle and use the cheapest one with tracking."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)  (API requires dim, so need logic to deal with this)
-
-"Look up rates from FedEx, USPS, and UPS for shipping from Atlanta to Seattle - select the lowest with tracking."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)  (API requires dim, so need logic to deal with this)
-
-"Find the best tracked option between USPS, UPS, and FedEx for this Atlanta to Seattle shipment and create the label."  Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed)  (API requires dim, so need logic to deal with this)
+"Find the best tracked option between USPS, UPS, and FedEx for this Atlanta to Seattle shipment and create the label." Steps: (param extract: RateShop Call, provide response to user, additional prompt engineering needed) (API requires dim, so need logic to deal with this)
+Better to test with: Find the best tracked option between USPS, UPS, and FedEx for this 27 Waterview Dr, Danbury, CT 06811 US to 802 Rail Fence Rd, Orange, CT 06477 US shipment and create the label.
+Follow up with: The package is 10x6x4 inches weighing 6 ox.
 
 ### With Order Number
-"Generate a shipping label for Order **#2433232** with the fastest delivery option under $15."
-( was working, but need more testing)  need to make sure all information is avail, otherwise ask for more info.
+"Generate a shipping label for Order #1005101 with the fastest delivery option under $15." ( was working, but need more testing) need to make sure all information is avail, otherwise ask for more info. This should 1) rate shop based on information from order and return the carrier id for the fastest delivery under $15. 2) Call create shipping label with this carrier id.
 
-"What’s the quickest shipping method under $15 for order **#2433232**? Print the label."
-Steps:  Confusing question for LLM, ned to make sure it asks for more details.
+"What’s the quickest shipping method under $15 for order #1005101? Print the label." Steps: Confusing question for LLM, need to make sure it asks for more details. This should ask for the paper size, otherwise, it should choose the best option and then create the label.
 
-"Label this order **#2433232** with a carrier offering fast delivery and keeping cost below $15."
-(carrier offering, LLM may not know these terms, so LLM needs to ask for more info until it understands.
+"Label this order #1005101 with a carrier offering fast delivery and keeping cost below $15." (carrier offering, LLM may not know these terms, so LLM needs to ask for more info until it understands. As expected, LLM will list the shipping options which are < $15 and end the response by asking: "Would you like to select one of these shipping options to create a shipping label? If so, please specify the option number.", which seems correct.
 
-"Pick a shipping option under $15 with the soonest delivery date and generate a label for this order."
-so again clarifying questions need to be asked when it's not clear what to do.  
+"Pick a shipping option under $15 with the soonest delivery date and generate a label for this order." so again clarifying questions need to be asked when it's not clear what to do.
 
 
 
