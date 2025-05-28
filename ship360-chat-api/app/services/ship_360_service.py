@@ -116,7 +116,8 @@ class Ship360Service:
     async def create_shipment_domestic(
             self, 
             order: dict,
-            carrier_account_id: str, 
+            carrier_account_id: str,
+            service_id: str, 
             shipping_label_size: str
         ):
 
@@ -145,7 +146,7 @@ class Ship360Service:
             ),
             carrierAccountId=carrier_account_id,
             parcelType="PKG",
-            serviceId="UGA",
+            serviceId=service_id,
             shipmentOptions=create_shipping_label_request.ShipmentOptions(
                 addToManifest=True,
                 packageDescription="test" # TODO

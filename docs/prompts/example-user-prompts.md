@@ -34,7 +34,9 @@ Follow up with: The package is 10x6x4 inches weighing 6 ox.
 
 "What’s the quickest shipping method under $15 for order #1005101? Print the label." Steps: Confusing question for LLM, need to make sure it asks for more details. This should ask for the paper size, otherwise, it should choose the best option and then create the label.
 
-"Label this order #1005101 with a carrier offering fast delivery and keeping cost below $15." (carrier offering, LLM may not know these terms, so LLM needs to ask for more info until it understands. As expected, LLM will list the shipping options which are < $15 and end the response by asking: "Would you like to select one of these shipping options to create a shipping label? If so, please specify the option number.", which seems correct.
+"Label this order **#1005101** with a carrier offering fast delivery and keeping cost below $15."
+(carrier offering, LLM may not know these terms, so LLM needs to ask for more info until it understands.
+As expected, LLM will list the shipping options which are < $15 and end the response by asking: "Would you like to select one of these shipping options to create a shipping label? If so, please specify the option number.", which seems correct.
 
 "Pick a shipping option under $15 with the soonest delivery date and generate a label for this order." so again clarifying questions need to be asked when it's not clear what to do.
 
