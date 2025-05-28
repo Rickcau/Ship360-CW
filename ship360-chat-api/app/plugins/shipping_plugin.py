@@ -28,7 +28,7 @@ class ShippingPlugin:
         order_id: Annotated[str, "The unique identifier for the order"],
         max_price: Annotated[float, "Maximum price for shipping options"] = 0.0,
         duration_value: Annotated[int, "Maximum duration in days for shipping options"] = 0,
-        duration_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
+        duration_comparison_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
     ):
         # Check for order_service dependency
         if not hasattr(self, "order_service") or self.order_service is None:
@@ -44,7 +44,7 @@ class ShippingPlugin:
             order=order,
             max_price=max_price,
             duration_value=duration_value,
-            duration_operator=duration_operator
+            duration_comparison_operator=duration_comparison_operator
         )
 
     # RDC Added 5/21/2025
@@ -54,7 +54,7 @@ class ShippingPlugin:
         user_prompt: Annotated[str, "The question the user is asking"],
         max_price: Annotated[Optional[Union[float, str]], "Maximum price for shipping options"] = 0.0,
         duration_value: Annotated[Optional[Union[int, str]], "Maximum duration in days for shipping options"] = 0,
-        duration_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
+        duration_comparison_operator: Annotated[str, "Comparison operator for duration (less_than, less_than_or_equal)"] = "less_than_or_equal"
     ):
         # Check if kernel is available
         if not self.kernel:
@@ -66,13 +66,13 @@ class ShippingPlugin:
         from semantic_kernel.connectors.ai.open_ai import OpenAIChatPromptExecutionSettings
 
         request_settings = OpenAIChatPromptExecutionSettings(
-            service_id='default', max_tokens=2000, temperature=0.0, top_p=0.8, response_format={"type": "json_object"}
+            service_id='default', max_tokens=2000, temperature=0.0, top_p=0.95, response_format={"type": "json_object"}
         )
-        request_settings.response_format = RateShopRequest
+        #request_settings.response_format = RateShopRequest
         
         # Define your prompt template with the JSON structure and additional logic
         prompt_template = f"""
-        You are a shipping assistant. Extract shipping information from the user's request.
+        You are a specialized shipping information extractor. Extract ALL shipping details from the user's request.
         
         User request: {{{{$input}}}}
         
@@ -80,50 +80,32 @@ class ShippingPlugin:
         For any fields that weren't mentioned or are unclear, leave them as empty strings or null values for numbers.
         Use 'IN' for inches, and 'LBS' for pounds and 'OZ' for ounces as dimension and weight units, respectively, when applicable.
         Default to 'US' for countryCode if not specified. Default to current date in YYYY-MM-DD format for dateOfShipment, if not specified.
+
+        REQUIRED INFORMATION:
+        - A complete "fromAddress" (addressLine1, cityTown, postalCode, stateProvince)
+        - A complete "toAddress" (addressLine1, cityTown, postalCode, stateProvince)
+        - Complete parcel information (length, width, height, weight)
         
         EXTRACTION GUIDELINES:
-        1. Parse complete addresses carefully - extract street address, city, state, ZIP code, and country code
-        2. For addresses, look for patterns like: 
-            - Street numbers and names (e.g., "421 8th Avenue")
-            - City and state combinations (e.g., "New York, NY")
-            - ZIP/postal codes (e.g., "10001")
+        1. FOR ADDRESSES:
+            - Look for patterns like "from [address]" and "to [address]"
+            - If you see a full address with street number, ALWAYS extract it as addressLine1
+            - Examples of addressLine1: "421 8th Avenue", "415 Mission Street", "123 Main St"
+            - If you see city, state, zip combinations, parse them separately
+            - NEVER leave addressLine1 empty if any street address is mentioned
             - Country codes (default to "US" if not specified)
-        3. For package information, extract:
+            - IMPORTANT: If any address information is missing, set them to null and include a clear explanation in llmResponse
+        2. FOR PACKAGE INFORMATION:
             - Dimensions in the format LxWxH (e.g., "10x6x4 in")
             - Weight with units (e.g., "2 lbs")
             - IMPORTANT: If any parcel dimensions or weight are missing, set them to null and include a clear explanation in llmResponse
 
+        VALIDATION CHECK:
+            - If you see a street address in the input but haven't extracted it, double-check your extraction
+            - For "infoComplete" to be true, BOTH addresses must have addressLine1, cityTown, stateProvince, postalCode AND parcel must have length, width, height, weight and unit
+
         CURRENT DATE: {current_date}
-
-        REQUIRED INFORMATION:
-        - At minimum, you need:
-        1. A valid "fromAddress" with at least addressLine1, cityTown, postalCode, and stateProvince
-        2. A valid "toAddress" with at least addressLine1, cityTown, postalCode, and stateProvince
-        3. Parcel dimensions (length, width, height), weight, and unit of weight (ounces or pounds). 
-           IMPORTANT: If ANY of these parcel details are missing, set "infoComplete" to false and explain exactly what's missing in the llmResponse.
-        
-        VALIDATION RULES:
-        - ALL of the following must be true for "infoComplete" to be true:
-        * fromAddress.addressLine1 is not empty
-        * fromAddress.cityTown is not empty
-        * fromAddress.postalCode is not empty
-        * fromAddress.stateProvince is not empty
-        * toAddress.addressLine1 is not empty
-        * toAddress.cityTown is not empty
-        * toAddress.postalCode is not empty
-        * toAddress.stateProvince is not empty
-        * parcel.length is not null
-        * parcel.width is not null
-        * parcel.height is not null
-        * parcel.weight is not null
-
-        EVALUATION LOGIC:
-        - If any required information is missing, set "infoComplete" to false
-        - If all required information is present, set "infoComplete" to true
-        - In the "llmResponse" field:
-        * If information is missing: clearly explain what specific information is still needed
-        * If information is complete: provide a brief summary of the shipping request (origin, destination, package details)
-        
+       
         Do not include ```json or any other formatting in your response. Please respond ONLY with the completed JSON object and nothing else:
         
         {{
@@ -192,7 +174,7 @@ class ShippingPlugin:
                 # Create the model instance - not being used for now since the service handles the json structure
                 #rate_shop_request = RateShopRequest(**extracted_info)
 
-                return await ship_360_service.perform_rate_shop(extracted_info, max_price, duration_value, duration_operator)
+                return await ship_360_service.perform_rate_shop(extracted_info, max_price, duration_value, duration_comparison_operator)
             else:
                 # If incomplete, return the extraction result with the message
                 return extracted_info
