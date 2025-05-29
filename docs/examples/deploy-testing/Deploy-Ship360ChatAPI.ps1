@@ -51,7 +51,8 @@
     Testing Status:
     - Script syntax and structure validated
     - Prerequisites checking implemented
-    - Requires actual Azure deployment testing for full verification
+    - Error handling improved based on real Azure CLI testing feedback
+    - Resource existence verification added to prevent false success reporting
 #>
 
 param(
@@ -176,59 +177,85 @@ function New-AzureResources {
     # Create Resource Group
     Write-ColorOutput "Creating resource group: $ResourceGroupName" "Cyan"
     try {
-        $rgExists = az group exists --name $ResourceGroupName --output tsv
-        if ($rgExists -eq "false") {
-            az group create --name $ResourceGroupName --location $Location --output none
+        $rgExists = az group exists --name $ResourceGroupName --output tsv 2>$null
+        if ($LASTEXITCODE -ne 0 -or $rgExists -eq "false") {
+            $createResult = az group create --name $ResourceGroupName --location $Location --output json 2>&1
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Failed to create resource group: $createResult"
+                exit 1
+            }
             Write-ColorOutput "✓ Resource group created: $ResourceGroupName" "Green"
         } else {
             Write-ColorOutput "✓ Resource group already exists: $ResourceGroupName" "Green"
         }
     }
     catch {
-        Write-Error "Failed to create resource group: $ResourceGroupName"
+        Write-Error "Failed to create resource group: $ResourceGroupName - $_"
         exit 1
     }
     
     # Create App Service Plan
     Write-ColorOutput "Creating App Service Plan: $AppServicePlanName" "Cyan"
     try {
-        $planExists = az appservice plan show --name $AppServicePlanName --resource-group $ResourceGroupName --output none 2>$null
-        if (!$planExists) {
-            az appservice plan create `
+        # Check if App Service Plan exists
+        $planCheck = az appservice plan show --name $AppServicePlanName --resource-group $ResourceGroupName 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            # Plan doesn't exist, create it
+            $createResult = az appservice plan create `
                 --name $AppServicePlanName `
                 --resource-group $ResourceGroupName `
                 --location $Location `
                 --sku $PricingTier `
                 --is-linux `
-                --output none
+                --output json 2>&1
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Failed to create App Service Plan: $createResult"
+                exit 1
+            }
             Write-ColorOutput "✓ App Service Plan created: $AppServicePlanName" "Green"
         } else {
             Write-ColorOutput "✓ App Service Plan already exists: $AppServicePlanName" "Green"
         }
     }
     catch {
-        Write-Error "Failed to create App Service Plan: $AppServicePlanName"
+        Write-Error "Failed to create App Service Plan: $AppServicePlanName - $_"
         exit 1
     }
     
     # Create Web App
     Write-ColorOutput "Creating Web App: $AppServiceName" "Cyan"
     try {
-        $appExists = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output none 2>$null
-        if (!$appExists) {
-            az webapp create `
+        # Check if Web App exists
+        $appCheck = az webapp show --name $AppServiceName --resource-group $ResourceGroupName 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            # App doesn't exist, create it
+            $createResult = az webapp create `
                 --name $AppServiceName `
                 --resource-group $ResourceGroupName `
                 --plan $AppServicePlanName `
-                --runtime "PYTHON|3.11" `
-                --output none
+                --runtime "PYTHON:3.11" `
+                --output json 2>&1
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Failed to create Web App: $createResult"
+                exit 1
+            }
             Write-ColorOutput "✓ Web App created: $AppServiceName" "Green"
         } else {
             Write-ColorOutput "✓ Web App already exists: $AppServiceName" "Green"
         }
+        
+        # Verify the Web App exists after creation/check
+        $verifyApp = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output json 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Web App verification failed - app was not created successfully"
+            exit 1
+        }
+        
     }
     catch {
-        Write-Error "Failed to create Web App: $AppServiceName"
+        Write-Error "Failed to create Web App: $AppServiceName - $_"
         exit 1
     }
 }
@@ -238,6 +265,13 @@ function Set-EnvironmentVariables {
     Write-ColorOutput "Configuring environment variables..." "Yellow"
     
     try {
+        # Verify Web App exists before configuring
+        $appCheck = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output json 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Web App '$AppServiceName' not found. Cannot configure environment variables."
+            exit 1
+        }
+        
         # Read environment file
         $envContent = Get-Content $EnvironmentFile
         $appSettings = @()
@@ -262,11 +296,16 @@ function Set-EnvironmentVariables {
         
         if ($appSettings.Count -gt 0) {
             # Set application settings
-            az webapp config appsettings set `
+            $settingsResult = az webapp config appsettings set `
                 --name $AppServiceName `
                 --resource-group $ResourceGroupName `
                 --settings $appSettings `
-                --output none
+                --output json 2>&1
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Failed to configure environment variables: $settingsResult"
+                exit 1
+            }
             
             Write-ColorOutput "✓ Environment variables configured ($($appSettings.Count) variables)" "Green"
         } else {
@@ -284,14 +323,26 @@ function Set-StartupCommand {
     Write-ColorOutput "Configuring startup command..." "Yellow"
     
     try {
+        # Verify Web App exists before configuring
+        $appCheck = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output json 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Web App '$AppServiceName' not found. Cannot configure startup command."
+            exit 1
+        }
+        
         # Set startup command for FastAPI with gunicorn
         $startupCommand = "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0 --timeout 600"
         
-        az webapp config set `
+        $configResult = az webapp config set `
             --name $AppServiceName `
             --resource-group $ResourceGroupName `
             --startup-file $startupCommand `
-            --output none
+            --output json 2>&1
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to configure startup command: $configResult"
+            exit 1
+        }
         
         Write-ColorOutput "✓ Startup command configured" "Green"
     }
@@ -306,6 +357,13 @@ function Deploy-Application {
     Write-ColorOutput "Deploying application..." "Yellow"
     
     try {
+        # Verify Web App exists before deploying
+        $appCheck = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output json 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Web App '$AppServiceName' not found. Cannot deploy application."
+            exit 1
+        }
+        
         # Get the absolute path to source
         $absoluteSourcePath = Resolve-Path $SourcePath
         
@@ -358,12 +416,17 @@ function Deploy-Application {
         
         # Deploy using Azure CLI
         Write-ColorOutput "Uploading and deploying application..." "Cyan"
-        az webapp deploy `
+        $deployResult = az webapp deploy `
             --name $AppServiceName `
             --resource-group $ResourceGroupName `
             --src-path $zipPath `
             --type zip `
-            --output none
+            --output json 2>&1
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to deploy application: $deployResult"
+            exit 1
+        }
         
         Write-ColorOutput "✓ Application deployed successfully" "Green"
         
@@ -384,8 +447,15 @@ function Test-Deployment {
     Write-ColorOutput "Testing deployment..." "Yellow"
     
     try {
+        # Verify Web App exists before testing
+        $appInfo = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output json 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Web App '$AppServiceName' not found. Cannot test deployment."
+            exit 1
+        }
+        
         # Get the app URL
-        $appUrl = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --query "defaultHostName" --output tsv
+        $appUrl = ($appInfo | ConvertFrom-Json).defaultHostName
         $fullUrl = "https://$appUrl"
         
         Write-ColorOutput "Application URL: $fullUrl" "Cyan"
@@ -447,12 +517,20 @@ function Main {
         Write-ColorOutput "=================================================" "Green"
         
         # Display summary
-        $appUrl = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --query "defaultHostName" --output tsv
-        Write-ColorOutput "📋 Deployment Summary:" "Cyan"
-        Write-ColorOutput "   Resource Group: $ResourceGroupName" "White"
-        Write-ColorOutput "   App Service: $AppServiceName" "White"
-        Write-ColorOutput "   URL: https://$appUrl" "White"
-        Write-ColorOutput "   API Docs: https://$appUrl/docs" "White"
+        $appInfo = az webapp show --name $AppServiceName --resource-group $ResourceGroupName --output json 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            $appUrl = ($appInfo | ConvertFrom-Json).defaultHostName
+            Write-ColorOutput "📋 Deployment Summary:" "Cyan"
+            Write-ColorOutput "   Resource Group: $ResourceGroupName" "White"
+            Write-ColorOutput "   App Service: $AppServiceName" "White"
+            Write-ColorOutput "   URL: https://$appUrl" "White"
+            Write-ColorOutput "   API Docs: https://$appUrl/docs" "White"
+        } else {
+            Write-ColorOutput "📋 Deployment Summary:" "Cyan"
+            Write-ColorOutput "   Resource Group: $ResourceGroupName" "White"
+            Write-ColorOutput "   App Service: $AppServiceName" "White"
+            Write-ColorOutput "   URL: Unable to retrieve (check Azure Portal)" "Yellow"
+        }
         
     }
     catch {

@@ -323,6 +323,27 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
    - Check the Azure portal for deployment status
    - Increase timeout in script if needed
 
+6. **ResourceNotFound Errors**
+   - These indicate Azure resources weren't created successfully
+   - The script now includes improved error handling to stop on failures
+   - Check Azure CLI output for specific error messages
+   - Verify subscription permissions and quotas
+
+7. **Web App Creation Failures**
+   - App Service names must be globally unique
+   - Check if the app name is already taken
+   - Verify the resource group exists
+   - Ensure the App Service Plan was created successfully
+
+### Script Error Handling Improvements
+
+The deployment script has been enhanced with better error detection:
+
+- **Resource existence verification**: Checks if resources actually exist before proceeding
+- **Azure CLI exit code checking**: Uses `$LASTEXITCODE` to detect Azure CLI failures
+- **Detailed error reporting**: Captures and displays Azure CLI error messages
+- **Fail-fast behavior**: Stops execution immediately when critical errors occur
+
 ### Debugging Commands
 
 ```bash
