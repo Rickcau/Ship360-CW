@@ -318,7 +318,31 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
    az webapp log download --name your-app-name --resource-group your-rg
    ```
 
-5. **Timeout Issues**
+5. **Deployment Timeout Issues (504 Gateway Timeout)**
+   - **What it means**: Azure deployment service timed out waiting for deployment completion
+   - **Important**: Timeout doesn't necessarily mean deployment failed
+   - **Local fixes**:
+     ```bash
+     # Optimize requirements.txt - remove unused packages
+     pip freeze > current_requirements.txt
+     # Review and remove unnecessary dependencies
+     
+     # Alternative deployment method
+     az webapp up --name your-app-name --resource-group your-rg --runtime "PYTHON:3.11"
+     ```
+   - **Troubleshooting steps**:
+     1. Wait 5-10 minutes after timeout, then check application URL
+     2. Check deployment status in Azure Portal:
+        - Navigate to App Service > Deployment Center > Logs
+        - Or visit: `https://your-app-name.scm.azurewebsites.net/api/deployments/latest`
+     3. Check if the application is running: `https://your-app-name.azurewebsites.net/`
+     4. Monitor deployment logs: `az webapp log tail --name your-app-name --resource-group your-rg`
+   - **Prevention**:
+     - Use smaller deployment packages
+     - Consider using Azure DevOps or GitHub Actions for large deployments
+     - Use container deployment for complex applications
+
+6. **General Timeout Issues**
    - Large deployments may take time
    - Check the Azure portal for deployment status
    - Increase timeout in script if needed

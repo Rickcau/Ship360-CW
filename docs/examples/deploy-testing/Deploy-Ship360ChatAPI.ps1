@@ -416,6 +416,8 @@ function Deploy-Application {
         
         # Deploy using Azure CLI
         Write-ColorOutput "Uploading and deploying application..." "Cyan"
+        Write-ColorOutput "⏱️  Note: Large deployments may take 5-10 minutes and could timeout" "Yellow"
+        
         $deployResult = az webapp deploy `
             --name $AppServiceName `
             --resource-group $ResourceGroupName `
@@ -423,12 +425,37 @@ function Deploy-Application {
             --type zip `
             --output json 2>&1
         
+        # Check for deployment failures
         if ($LASTEXITCODE -ne 0) {
-            Write-Error "Failed to deploy application: $deployResult"
-            exit 1
+            # Check if it's a timeout error specifically
+            if ($deployResult -match "504|GatewayTimeout|timeout") {
+                Write-ColorOutput "❌ Deployment timed out (504 Gateway Timeout)" "Red"
+                Write-ColorOutput "" "White"
+                Write-ColorOutput "💡 Timeout Troubleshooting:" "Yellow"
+                Write-ColorOutput "   1. This is often due to slow dependency installation or large deployment package" "White"
+                Write-ColorOutput "   2. Check deployment status in Azure Portal: https://portal.azure.com" "White"
+                Write-ColorOutput "      - Navigate to your App Service > Deployment Center > Logs" "White"
+                Write-ColorOutput "   3. The deployment may still succeed despite the timeout" "White"
+                Write-ColorOutput "   4. Wait 5-10 minutes then test the application URL" "White"
+                Write-ColorOutput "" "White"
+                Write-ColorOutput "🔧 To fix locally:" "Yellow"
+                Write-ColorOutput "   • Optimize requirements.txt (remove unused packages)" "White"
+                Write-ColorOutput "   • Consider using Azure DevOps or GitHub Actions for large deployments" "White"
+                Write-ColorOutput "   • Use 'az webapp up' command as alternative deployment method" "White"
+                Write-ColorOutput "" "White"
+                Write-ColorOutput "⚠️  This timeout does not necessarily mean deployment failed." "Yellow"
+                Write-ColorOutput "    Check the application URL in a few minutes to verify deployment status." "Yellow"
+                
+                # Don't exit immediately for timeouts - let user decide
+                Write-ColorOutput "" "White"
+                Write-ColorOutput "Continuing with deployment verification..." "Cyan"
+            } else {
+                Write-Error "Failed to deploy application: $deployResult"
+                exit 1
+            }
+        } else {
+            Write-ColorOutput "✓ Application deployed successfully" "Green"
         }
-        
-        Write-ColorOutput "✓ Application deployed successfully" "Green"
         
         # Clean up temporary files
         Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
@@ -464,20 +491,39 @@ function Test-Deployment {
         $healthUrl = "$fullUrl/"
         Write-ColorOutput "Testing health endpoint: $healthUrl" "Cyan"
         
-        # Wait a moment for the app to start
-        Start-Sleep -Seconds 30
+        # Wait longer for the app to start, especially after timeout scenarios
+        Write-ColorOutput "⏳ Waiting for application to start (may take up to 2 minutes after deployment)..." "Yellow"
+        Start-Sleep -Seconds 60
         
+        $healthCheckSucceeded = $false
         try {
-            $response = Invoke-RestMethod -Uri $healthUrl -Method Get -TimeoutSec 30
+            $response = Invoke-RestMethod -Uri $healthUrl -Method Get -TimeoutSec 45
             if ($response.status -eq "ok") {
                 Write-ColorOutput "✓ Health check passed: $($response.message)" "Green"
+                $healthCheckSucceeded = $true
             } else {
                 Write-ColorOutput "⚠ Health check returned unexpected response" "Yellow"
             }
         }
         catch {
-            Write-ColorOutput "⚠ Health check failed - this might be normal if the app is still starting up" "Yellow"
-            Write-ColorOutput "  You can check the application logs in the Azure portal" "Yellow"
+            Write-ColorOutput "⚠ Health check failed - application may still be starting up" "Yellow"
+            Write-ColorOutput "  This is common after deployment timeouts" "Yellow"
+            Write-ColorOutput "" "White"
+            Write-ColorOutput "🔍 Troubleshooting steps:" "Yellow"
+            Write-ColorOutput "   1. Wait another 5-10 minutes and try accessing the URL manually" "White"
+            Write-ColorOutput "   2. Check application logs in Azure Portal:" "White"
+            Write-ColorOutput "      - Go to your App Service > Monitoring > Log stream" "White"
+            Write-ColorOutput "      - Or App Service > Advanced Tools > Go > Debug console" "White"
+            Write-ColorOutput "   3. Check if dependencies are still installing" "White"
+        }
+        
+        # Additional timeout-specific guidance
+        if (!$healthCheckSucceeded) {
+            Write-ColorOutput "" "White"
+            Write-ColorOutput "💡 If you experienced a deployment timeout:" "Yellow"
+            Write-ColorOutput "   • The deployment may still be completing in the background" "White"
+            Write-ColorOutput "   • Python dependencies might still be installing" "White"
+            Write-ColorOutput "   • Check the SCM site for deployment status: https://$AppServiceName.scm.azurewebsites.net" "White"
         }
         
         # Test API documentation endpoint
