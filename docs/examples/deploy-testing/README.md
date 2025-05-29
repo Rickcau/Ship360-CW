@@ -359,6 +359,45 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
    - Verify the resource group exists
    - Ensure the App Service Plan was created successfully
 
+8. **Application Startup Failures**
+   
+   If your deployment succeeds but the application doesn't start:
+   
+   **Check the application logs first:**
+   ```bash
+   # Stream live logs (most important)
+   az webapp log tail --name your-app-name --resource-group your-rg
+   
+   # Or via Azure Portal: App Service > Log stream
+   ```
+   
+   **Common startup issues:**
+   
+   - **Missing environment variables**: The app requires all environment variables listed in the .env file
+     ```bash
+     # Check current app settings
+     az webapp config appsettings list --name your-app-name --resource-group your-rg
+     ```
+   
+   - **Import errors**: Missing Python packages or incorrect module paths
+     - Check if all requirements are in `requirements.txt`
+     - Verify the app structure matches the gunicorn command
+   
+   - **Port binding issues**: The app must use the PORT environment variable provided by Azure
+     - The deployment script automatically sets PORT=8000
+     - The startup wrapper script handles port configuration
+   
+   **Debugging steps:**
+   1. Check deployment logs: Visit `https://your-app-name.scm.azurewebsites.net/api/deployments/latest`
+   2. Check application logs: `az webapp log tail --name your-app-name --resource-group your-rg`
+   3. Restart the app: `az webapp restart --name your-app-name --resource-group your-rg`
+   4. Test the health endpoint: `https://your-app-name.azurewebsites.net/`
+   
+   **If the app still won't start:**
+   - Check that all required environment variables are set
+   - Verify the source code works locally: `cd ship360-chat-api && python -m uvicorn app.main:app`
+   - Review the startup validation script output in the logs
+
 ### Script Error Handling Improvements
 
 The deployment script has been enhanced with better error detection:

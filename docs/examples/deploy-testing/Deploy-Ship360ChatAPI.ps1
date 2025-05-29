@@ -295,6 +295,9 @@ function Set-EnvironmentVariables {
         }
         
         if ($appSettings.Count -gt 0) {
+            # Add default PORT setting for Azure App Service
+            $appSettings += "PORT=8000"
+            
             # Set application settings
             $settingsResult = az webapp config appsettings set `
                 --name $AppServiceName `
@@ -309,7 +312,19 @@ function Set-EnvironmentVariables {
             
             Write-ColorOutput "✓ Environment variables configured ($($appSettings.Count) variables)" "Green"
         } else {
-            Write-ColorOutput "⚠ No environment variables found in file" "Yellow"
+            # Even if no env file variables, set the PORT
+            $settingsResult = az webapp config appsettings set `
+                --name $AppServiceName `
+                --resource-group $ResourceGroupName `
+                --settings "PORT=8000" `
+                --output json 2>&1
+            
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Failed to configure PORT environment variable: $settingsResult"
+                exit 1
+            }
+            
+            Write-ColorOutput "⚠ No environment variables found in file, but PORT configured" "Yellow"
         }
     }
     catch {
@@ -331,7 +346,8 @@ function Set-StartupCommand {
         }
         
         # Set startup command for FastAPI with gunicorn
-        $startupCommand = "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0 --timeout 600"
+        # Use a startup wrapper that validates the environment first
+        $startupCommand = "python startup_wrapper.py"
         
         $configResult = az webapp config set `
             --name $AppServiceName `
@@ -376,24 +392,44 @@ function Deploy-Application {
         # Copy application files
         Copy-Item -Path "$absoluteSourcePath\*" -Destination $tempDir -Recurse -Force
         
-        # Ensure startup file is created for Azure App Service
-        $webConfigPath = Join-Path $tempDir "web.config"
-        $webConfigContent = @"
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <system.webServer>
-    <handlers>
-      <add name="PythonHandler" path="*" verb="*" modules="httpPlatformHandler" resourceType="Unspecified"/>
-    </handlers>
-    <httpPlatform processPath="python" arguments="-m gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0:%HTTP_PLATFORM_PORT% --timeout 600" stdoutLogEnabled="true" stdoutLogFile=".\python.log" startupTimeLimit="60" requestTimeout="00:10:00">
-      <environmentVariables>
-        <environmentVariable name="PORT" value="%HTTP_PLATFORM_PORT%" />
-      </environmentVariables>
-    </httpPlatform>
-  </system.webServer>
-</configuration>
+        # Create a simple startup script that will run gunicorn after validation
+        $startupScriptPath = Join-Path $tempDir "startup_wrapper.py"
+        $startupScriptContent = @"
+#!/usr/bin/env python3
+import os
+import sys
+import subprocess
+
+# Run startup validation
+print("🚀 Running Ship360 Chat API startup validation...")
+result = subprocess.run([sys.executable, "startup.py"], capture_output=False)
+if result.returncode != 0:
+    print("❌ Startup validation failed!")
+    sys.exit(1)
+
+# Get port from environment
+port = os.environ.get('PORT', '8000')
+print(f"✅ Starting gunicorn on port {port}...")
+
+# Start gunicorn
+cmd = [
+    sys.executable, "-m", "gunicorn",
+    "-w", "2",
+    "-k", "uvicorn.workers.UvicornWorker", 
+    "app.main:app",
+    f"--bind=0.0.0.0:{port}",
+    "--timeout", "600",
+    "--preload",
+    "--max-requests", "1000", 
+    "--max-requests-jitter", "50",
+    "--log-level", "info",
+    "--access-logfile", "-",
+    "--error-logfile", "-"
+]
+
+os.execv(sys.executable, cmd)
 "@
-        Set-Content -Path $webConfigPath -Value $webConfigContent
+        Set-Content -Path $startupScriptPath -Value $startupScriptContent
         
         # Create ZIP package
         $zipPath = Join-Path $env:TEMP "ship360-deployment-$(Get-Date -Format 'yyyyMMdd-HHmmss').zip"
