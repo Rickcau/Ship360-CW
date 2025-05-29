@@ -35,6 +35,9 @@
 .PARAMETER SkipResourceCreation
     Skip creation of Azure resources and only deploy the application.
 
+.PARAMETER DebugMode
+    Enable debug startup command that provides detailed diagnostics for troubleshooting.
+
 .EXAMPLE
     .\Deploy-Ship360ChatAPI.ps1 -ResourceGroupName "rg-ship360-dev" -AppServiceName "app-ship360-chat-dev" -EnvironmentFile ".\ship360.env"
 
@@ -81,7 +84,10 @@ param(
     [string]$SourcePath = "../../../ship360-chat-api",
     
     [Parameter(Mandatory = $false)]
-    [switch]$SkipResourceCreation
+    [switch]$SkipResourceCreation,
+    
+    [Parameter(Mandatory = $false)]
+    [switch]$DebugMode
 )
 
 # Set error action preference
@@ -132,6 +138,19 @@ function Test-Prerequisites {
     if (!(Test-Path $requirementsPath)) {
         Write-Error "requirements.txt not found at '$requirementsPath'."
         exit 1
+    }
+    
+    # Validate required dependencies
+    $requirementsContent = Get-Content $requirementsPath
+    if (-not ($requirementsContent -match "uvicorn")) {
+        Write-ColorOutput "⚠ Warning: uvicorn not found in requirements.txt" "Yellow"
+        Write-ColorOutput "  This is required for the gunicorn uvicorn worker" "Yellow"
+        Write-ColorOutput "  Add 'uvicorn' to your requirements.txt file" "Yellow"
+    }
+    if (-not ($requirementsContent -match "gunicorn")) {
+        Write-ColorOutput "⚠ Warning: gunicorn not found in requirements.txt" "Yellow"
+        Write-ColorOutput "  This is required for production deployment" "Yellow"
+        Write-ColorOutput "  Add 'gunicorn' to your requirements.txt file" "Yellow"
     }
     
     # Check if environment file exists
@@ -346,8 +365,14 @@ function Set-StartupCommand {
         }
         
         # Set startup command for FastAPI with gunicorn
-        # Use a startup wrapper that validates the environment first
-        $startupCommand = "python startup_wrapper.py"
+        # Activate virtual environment first to ensure packages are available
+        if ($DebugMode) {
+            # Debug version to see what's happening during startup
+            $startupCommand = "echo 'Python location:' && which python && echo 'Python version:' && python --version && echo 'Installed packages:' && pip list | grep -E '(uvicorn|gunicorn|fastapi)' && echo 'Starting app...' && source /home/site/wwwroot/venv/bin/activate && python startup_wrapper.py"
+            Write-ColorOutput "✓ Debug mode enabled - startup command will provide detailed diagnostics" "Yellow"
+        } else {
+            $startupCommand = "source /home/site/wwwroot/venv/bin/activate && python startup_wrapper.py"
+        }
         
         $configResult = az webapp config set `
             --name $AppServiceName `
@@ -396,6 +421,16 @@ function Deploy-Application {
         $startupScriptPath = Join-Path $tempDir "startup_wrapper.py"
         $startupScriptContent = @"
 #!/usr/bin/env python3
+"""
+Ship360 Chat API Startup Wrapper
+
+This script provides startup validation and launches the FastAPI application with gunicorn.
+
+Alternative startup commands (for troubleshooting):
+1. Simple Uvicorn (development): source /home/site/wwwroot/venv/bin/activate && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+2. Gunicorn with sync workers: source /home/site/wwwroot/venv/bin/activate && gunicorn -w 4 -b 0.0.0.0:8000 app.main:app --timeout 600
+3. Direct virtual environment Python: /home/site/wwwroot/venv/bin/python -m gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0:8000 --timeout 600
+"""
 import os
 import sys
 import subprocess
@@ -480,9 +515,18 @@ def start_app():
         else:
             logger.info(f"  {key}={value}")
     
+    # Use virtual environment python directly to ensure packages are found
+    venv_python = "/home/site/wwwroot/venv/bin/python"
+    if os.path.exists(venv_python):
+        python_cmd = venv_python
+        logger.info(f"✅ Using virtual environment Python: {python_cmd}")
+    else:
+        python_cmd = sys.executable
+        logger.info(f"⚠️ Virtual environment Python not found, using: {python_cmd}")
+    
     # Start gunicorn with more conservative settings
     cmd = [
-        sys.executable, "-m", "gunicorn",
+        python_cmd, "-m", "gunicorn",
         "-w", "1",  # Single worker for debugging
         "-k", "uvicorn.workers.UvicornWorker", 
         "app.main:app",
@@ -497,7 +541,7 @@ def start_app():
     ]
     
     logger.info(f"Executing command: {' '.join(cmd)}")
-    os.execv(sys.executable, cmd)
+    os.execv(python_cmd, cmd)
 
 if __name__ == "__main__":
     try:

@@ -200,6 +200,24 @@ If you already have the Azure resources created:
     -SkipResourceCreation
 ```
 
+#### Debug Mode (For Troubleshooting)
+
+If you're experiencing application startup issues, use debug mode to get detailed diagnostics:
+
+```powershell
+.\Deploy-Ship360ChatAPI.ps1 `
+    -ResourceGroupName "rg-ship360-dev" `
+    -AppServiceName "app-ship360-chat-dev" `
+    -EnvironmentFile ".\ship360.env" `
+    -DebugMode
+```
+
+Debug mode provides:
+- Python version and location information
+- List of installed packages (uvicorn, gunicorn, fastapi)
+- Detailed startup command execution
+- Enhanced logging for troubleshooting ModuleNotFoundError issues
+
 ### Bash Wrapper Script (Linux/macOS/WSL)
 
 For users who prefer bash, we provide a wrapper script:
@@ -447,6 +465,18 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
    - **Import errors**: Missing Python packages or incorrect module paths
      - Check if all requirements are in `requirements.txt`
      - Verify the app structure matches the gunicorn command
+   
+   - **ModuleNotFoundError for uvicorn/gunicorn**: This common issue occurs when the virtual environment isn't properly activated
+     - The deployment script now uses virtual environment activation in the startup command
+     - To debug: Use the debug mode: `.\Deploy-Ship360ChatAPI.ps1 -DebugMode` to see detailed startup diagnostics
+     - Alternative startup commands for troubleshooting:
+       ```bash
+       # Simple uvicorn (for testing)
+       source /home/site/wwwroot/venv/bin/activate && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+       
+       # Direct virtual environment python
+       /home/site/wwwroot/venv/bin/python -m gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0:8000 --timeout 600
+       ```
    
    - **Port binding issues**: The app must use the PORT environment variable provided by Azure
      - The deployment script automatically sets PORT=8000
