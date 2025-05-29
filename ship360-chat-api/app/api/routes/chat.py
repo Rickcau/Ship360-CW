@@ -115,7 +115,7 @@ async def process_chat_sync(
         logging.getLogger("kernel").setLevel(logging.DEBUG)
 
         order_service = OrderService()
-        shipping_plugin = ShippingPlugin(order_service)
+        shipping_plugin = ShippingPlugin(order_service,kernel=kernel)
 
         kernel.add_plugin(shipping_plugin, plugin_name="ShippingPlugin")
 

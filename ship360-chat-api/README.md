@@ -35,17 +35,13 @@ A FastAPI-based service that provides chat capabilities using Azure OpenAI and S
    AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
    AZURE_OPENAI_API_VERSION=2023-05-15
    
-   # Agent deployments
-   MASTER_AGENT_DEPLOYMENT=gpt-4
-   INTENT_AGENT_DEPLOYMENT=gpt-35-turbo
-   RATE_AGENT_DEPLOYMENT=gpt-35-turbo
-   LABEL_AGENT_DEPLOYMENT=gpt-35-turbo
-   TRACKING_AGENT_DEPLOYMENT=gpt-35-turbo
-   
-   # Optional: Azure AI Search configuration
-   # AZURE_SEARCH_SERVICE_ENDPOINT=https://your-search-service.search.windows.net
-   # AZURE_SEARCH_INDEX_NAME=your_index_name
-   # AZURE_SEARCH_API_KEY=your_search_api_key
+   # Shipping 360 API configuration
+   SP360_TOKEN_URL=""
+   SP360_TOKEN_USERNAME=""
+   SP360_TOKEN_PASSWORD=""
+   SP360_RATE_SHOP_URL=""
+   SP360_SHIPMENTS_URL=""
+   SP360_TRACKING_URL=""
    ```
 
 ## Running the Application
