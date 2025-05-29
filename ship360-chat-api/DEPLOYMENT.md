@@ -338,46 +338,6 @@ az containerapp delete --name <app-name> --resource-group <rg-name> --yes
 az apim delete --name <apim-name> --resource-group <rg-name>
 ```
 
-## Advanced Usage
-
-### Custom Docker Image
-```bash
-# Build locally
-make docker-build
-
-# Push to ACR
-az acr build --registry <registry-name> --image ship360-chat-api:custom .
-
-# Deploy custom image
-az containerapp update --name <app-name> --resource-group <rg-name> \
-  --image <registry-name>.azurecr.io/ship360-chat-api:custom
-```
-
-### Multi-Environment Deployment
-```bash
-# Development
-make deploy-containerapp RESOURCE_GROUP=ship360-dev ENVIRONMENT=dev
-
-# Staging
-make deploy-containerapp RESOURCE_GROUP=ship360-staging ENVIRONMENT=staging
-
-# Production
-make deploy-with-apim RESOURCE_GROUP=ship360-prod ENVIRONMENT=prod
-```
-
-### CI/CD Integration
-```yaml
-# Azure DevOps Pipeline Example
-- script: |
-    make azure-login
-    make deploy-containerapp RESOURCE_GROUP=$(RESOURCE_GROUP)
-  displayName: 'Deploy to Azure'
-  env:
-    AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-    AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
-    AZURE_TENANT_ID: $(AZURE_TENANT_ID)
-```
-
 ## Security Best Practices
 
 1. **Never commit `.env` files** to version control
@@ -385,18 +345,3 @@ make deploy-with-apim RESOURCE_GROUP=ship360-prod ENVIRONMENT=prod
 3. **Enable IP restrictions** when using APIM
 4. **Regular security updates** for base images
 5. **Monitor access logs** for suspicious activity
-
-## Support
-
-For issues or questions:
-1. Check Azure Container Apps logs
-2. Review deployment script output
-3. Consult Azure documentation
-4. Open an issue in the repository
-
-## Additional Resources
-
-- [Azure Container Apps Documentation](https://docs.microsoft.com/azure/container-apps/)
-- [Azure API Management Documentation](https://docs.microsoft.com/azure/api-management/)
-- [Ship360 API Documentation](https://docs.ship360.com/)
-- [Semantic Kernel Documentation](https://learn.microsoft.com/semantic-kernel/)

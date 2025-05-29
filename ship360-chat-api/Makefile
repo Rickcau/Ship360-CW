@@ -154,9 +154,9 @@ deploy-containerapp: check-env ## Deploy solution with Container Apps only
 	az acr build --registry $(ACR_NAME) --image $(IMAGE_NAME):$(IMAGE_TAG) .
 	@echo "$(GREEN)Deploying to Azure Container Apps...$(NC)"
 	@# Get ACR credentials and deploy in one command to ensure they're available
-	@ACR_LOGIN_SERVER=$$(az acr show --name $(ACR_NAME) --query loginServer --output tsv) && \
-	ACR_USERNAME=$$(az acr credential show --name $(ACR_NAME) --query username --output tsv) && \
-	ACR_PASSWORD=$$(az acr credential show --name $(ACR_NAME) --query "passwords[0].value" --output tsv) && \
+	@ACR_LOGIN_SERVER=$$(az acr show --name $(ACR_NAME) --query loginServer --output tsv | tr -d '\r') && \
+	ACR_USERNAME=$$(az acr credential show --name $(ACR_NAME) --query username --output tsv | tr -d '\r') && \
+	ACR_PASSWORD=$$(az acr credential show --name $(ACR_NAME) --query "passwords[0].value" --output tsv | tr -d '\r') && \
 	az containerapp create \
 		--name $(CONTAINER_APP_NAME) \
 		--resource-group $(RESOURCE_GROUP) \
@@ -242,7 +242,7 @@ deploy-with-apim: check-env ## Deploy solution with Container Apps and API Manag
 	
 	@# Import API
 	@echo "$(YELLOW)Importing Container App API into APIM...$(NC)"
-	@CONTAINER_APP_URL=$$(az containerapp show --name $(CONTAINER_APP_NAME) --resource-group $(RESOURCE_GROUP) --query properties.configuration.ingress.fqdn --output tsv) && \
+	@CONTAINER_APP_URL=$$(az containerapp show --name $(CONTAINER_APP_NAME) --resource-group $(RESOURCE_GROUP) --query properties.configuration.ingress.fqdn --output tsv | tr -d '\r') && \
 	az apim api import \
 		--resource-group $(RESOURCE_GROUP) \
 		--service-name $(APIM_NAME) \
@@ -300,7 +300,7 @@ update-containerapp: check-env ## Update existing Container App deployment
 	@echo "$(YELLOW)Building and pushing image to ACR...$(NC)"
 	az acr build --registry $(ACR_NAME) --image $(IMAGE_NAME):$(IMAGE_TAG) .
 	@echo "$(GREEN)Updating Container App...$(NC)"
-	@ACR_LOGIN_SERVER=$$(az acr show --name $(ACR_NAME) --query loginServer --output tsv) && \
+	@ACR_LOGIN_SERVER=$$(az acr show --name $(ACR_NAME) --query loginServer --output tsv | tr -d '\r') && \
 	az containerapp update \
 		--name $(CONTAINER_APP_NAME) \
 		--resource-group $(RESOURCE_GROUP) \
@@ -371,7 +371,7 @@ apim-setup: azure-login ## Create API Management instance
 .PHONY: apim-import-api
 apim-import-api: ## Import Container App API into APIM
 	@echo "$(YELLOW)Importing Container App API into APIM...$(NC)"
-	@CONTAINER_APP_URL=$$(az containerapp show --name $(CONTAINER_APP_NAME) --resource-group $(RESOURCE_GROUP) --query properties.configuration.ingress.fqdn --output tsv) && \
+	@CONTAINER_APP_URL=$$(az containerapp show --name $(CONTAINER_APP_NAME) --resource-group $(RESOURCE_GROUP) --query properties.configuration.ingress.fqdn --output tsv | tr -d '\r') && \
 	if [ -z "$$CONTAINER_APP_URL" ]; then \
 		echo "$(RED)Error: Could not get Container App URL. Ensure the Container App is deployed.$(NC)"; \
 		exit 1; \
