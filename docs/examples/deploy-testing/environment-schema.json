@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ship360 Chat API Environment Configuration",
+  "description": "JSON schema for validating environment variables for Ship360 Chat API deployment",
+  "type": "object",
+  "properties": {
+    "AZURE_OPENAI_ENDPOINT": {
+      "type": "string",
+      "pattern": "^https://.*\\.openai\\.azure\\.com/?$",
+      "description": "Azure OpenAI service endpoint URL"
+    },
+    "AZURE_OPENAI_API_KEY": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Azure OpenAI API key"
+    },
+    "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Azure OpenAI chat model deployment name (e.g., gpt-4o)"
+    },
+    "AZURE_OPENAI_API_VERSION": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}(-preview)?$",
+      "description": "Azure OpenAI API version (e.g., 2023-05-15)"
+    },
+    "SP360_TOKEN_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 authentication token endpoint URL"
+    },
+    "SP360_TOKEN_USERNAME": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Ship360 API username"
+    },
+    "SP360_TOKEN_PASSWORD": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Ship360 API password"
+    },
+    "SP360_RATE_SHOP_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 rate shopping API endpoint URL"
+    },
+    "SP360_SHIPMENTS_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 shipments API endpoint URL"
+    },
+    "SP360_TRACKING_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 tracking API endpoint URL"
+    },
+    "AZURE_SEARCH_SERVICE_ENDPOINT": {
+      "type": "string",
+      "format": "uri",
+      "description": "Azure AI Search service endpoint (optional)"
+    },
+    "AZURE_SEARCH_INDEX_NAME": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Azure AI Search index name (optional)"
+    },
+    "AZURE_SEARCH_API_KEY": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Azure AI Search API key (optional)"
+    }
+  },
+  "required": [
+    "AZURE_OPENAI_ENDPOINT",
+    "AZURE_OPENAI_API_KEY",
+    "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME",
+    "AZURE_OPENAI_API_VERSION",
+    "SP360_TOKEN_URL",
+    "SP360_TOKEN_USERNAME",
+    "SP360_TOKEN_PASSWORD",
+    "SP360_RATE_SHOP_URL",
+    "SP360_SHIPMENTS_URL",
+    "SP360_TRACKING_URL"
+  ],
+  "additionalProperties": true
+}
