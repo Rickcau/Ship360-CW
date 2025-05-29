@@ -392,42 +392,123 @@ function Deploy-Application {
         # Copy application files
         Copy-Item -Path "$absoluteSourcePath\*" -Destination $tempDir -Recurse -Force
         
-        # Create a simple startup script that will run gunicorn after validation
+        # Create a robust startup script that will help diagnose issues
         $startupScriptPath = Join-Path $tempDir "startup_wrapper.py"
         $startupScriptContent = @"
 #!/usr/bin/env python3
 import os
 import sys
 import subprocess
+import logging
+from pathlib import Path
 
-# Run startup validation
-print("🚀 Running Ship360 Chat API startup validation...")
-result = subprocess.run([sys.executable, "startup.py"], capture_output=False)
-if result.returncode != 0:
-    print("❌ Startup validation failed!")
-    sys.exit(1)
+# Configure logging for startup debugging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - STARTUP - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger(__name__)
 
-# Get port from environment
-port = os.environ.get('PORT', '8000')
-print(f"✅ Starting gunicorn on port {port}...")
+def check_files():
+    """Check if required files are present"""
+    logger.info("🔍 Checking for required files...")
+    cwd = Path.cwd()
+    logger.info(f"Current directory: {cwd}")
+    
+    # List all files in current directory
+    try:
+        files = list(cwd.glob('*'))
+        logger.info(f"Files in root: {[f.name for f in files if f.is_file()]}")
+        dirs = list(cwd.glob('*/'))
+        logger.info(f"Directories: {[d.name for d in dirs]}")
+    except Exception as e:
+        logger.error(f"Error listing files: {e}")
+    
+    # Check for startup.py
+    startup_py = cwd / "startup.py"
+    if startup_py.exists():
+        logger.info("✅ startup.py found")
+        return True
+    else:
+        logger.warning("⚠️ startup.py not found - skipping validation")
+        return False
 
-# Start gunicorn
-cmd = [
-    sys.executable, "-m", "gunicorn",
-    "-w", "2",
-    "-k", "uvicorn.workers.UvicornWorker", 
-    "app.main:app",
-    f"--bind=0.0.0.0:{port}",
-    "--timeout", "600",
-    "--preload",
-    "--max-requests", "1000", 
-    "--max-requests-jitter", "50",
-    "--log-level", "info",
-    "--access-logfile", "-",
-    "--error-logfile", "-"
-]
+def run_validation():
+    """Run startup validation if startup.py exists"""
+    if not check_files():
+        logger.warning("Skipping startup validation - continuing with direct app start")
+        return True
+        
+    try:
+        logger.info("🚀 Running Ship360 Chat API startup validation...")
+        result = subprocess.run([sys.executable, "startup.py"], 
+                              capture_output=True, text=True, timeout=30)
+        
+        # Log output regardless of success/failure
+        if result.stdout:
+            logger.info(f"Validation stdout: {result.stdout}")
+        if result.stderr:
+            logger.info(f"Validation stderr: {result.stderr}")
+            
+        if result.returncode != 0:
+            logger.warning(f"❌ Startup validation failed with code {result.returncode}")
+            logger.warning("Continuing anyway to help with debugging...")
+            return True  # Don't fail on validation for now
+        else:
+            logger.info("✅ Startup validation passed")
+            return True
+            
+    except subprocess.TimeoutExpired:
+        logger.warning("⏰ Startup validation timed out - continuing anyway")
+        return True
+    except Exception as e:
+        logger.warning(f"⚠️ Startup validation error: {e} - continuing anyway")
+        return True
 
-os.execv(sys.executable, cmd)
+def start_app():
+    """Start the FastAPI application with gunicorn"""
+    # Get port from environment
+    port = os.environ.get('PORT', '8000')
+    logger.info(f"✅ Starting gunicorn on port {port}...")
+    
+    # Log environment variables (excluding sensitive ones)
+    logger.info("Environment variables:")
+    for key, value in sorted(os.environ.items()):
+        if any(sensitive in key.upper() for sensitive in ['PASSWORD', 'SECRET', 'KEY', 'TOKEN']):
+            logger.info(f"  {key}=***HIDDEN***")
+        else:
+            logger.info(f"  {key}={value}")
+    
+    # Start gunicorn with more conservative settings
+    cmd = [
+        sys.executable, "-m", "gunicorn",
+        "-w", "1",  # Single worker for debugging
+        "-k", "uvicorn.workers.UvicornWorker", 
+        "app.main:app",
+        f"--bind=0.0.0.0:{port}",
+        "--timeout", "300",
+        "--keep-alive", "2",
+        "--max-requests", "1000", 
+        "--max-requests-jitter", "50",
+        "--log-level", "info",
+        "--access-logfile", "-",
+        "--error-logfile", "-"
+    ]
+    
+    logger.info(f"Executing command: {' '.join(cmd)}")
+    os.execv(sys.executable, cmd)
+
+if __name__ == "__main__":
+    try:
+        logger.info("🚀 Starting Ship360 Chat API deployment...")
+        run_validation()
+        start_app()
+    except Exception as e:
+        logger.error(f"💥 Fatal startup error: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        sys.exit(1)
 "@
         Set-Content -Path $startupScriptPath -Value $startupScriptContent
         

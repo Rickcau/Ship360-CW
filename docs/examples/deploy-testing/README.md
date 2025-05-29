@@ -342,7 +342,72 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
      - Consider using Azure DevOps or GitHub Actions for large deployments
      - Use container deployment for complex applications
 
-6. **General Timeout Issues**
+6. **Application Startup Failures**
+   - **Container Exiting/Not Responding on Port 8000**:
+     ```bash
+     # Check container logs
+     az webapp log tail --name your-app-name --resource-group your-rg
+     
+     # Enable detailed logging
+     az webapp log config --name your-app-name --resource-group your-rg \
+       --application-logging filesystem --level information
+     ```
+     
+   - **Missing Files in Deployment**:
+     If you notice missing files (like `startup.py`) in the deployment:
+     ```bash
+     # Check what files were deployed
+     az webapp ssh --name your-app-name --resource-group your-rg
+     # Then in the SSH session:
+     ls -la /home/site/wwwroot/
+     ```
+     
+   - **Environment Variable Issues**:
+     - Verify environment variables are set in App Service:
+       ```bash
+       az webapp config appsettings list --name your-app-name --resource-group your-rg
+       ```
+     - The startup script now allows missing variables for debugging
+     - Check the application logs for specific missing variables
+     
+   - **Python Import Errors**:
+     - Check that all dependencies are installed:
+       ```bash
+       az webapp ssh --name your-app-name --resource-group your-rg
+       # In SSH session:
+       cd /home/site/wwwroot
+       python diagnose.py  # Run diagnostic script
+       ```
+     
+   - **Startup Script Issues**:
+     - The deployment includes two startup scripts:
+       - `startup_wrapper.py` - Main startup script (created during deployment)
+       - `startup.py` - Validation script (from source code)
+     - If either is missing, check the deployment logs
+     - You can manually test startup:
+       ```bash
+       # In SSH session:
+       python startup_wrapper.py
+       ```
+
+7. **Diagnostic Tools**
+   The deployment includes a diagnostic script for troubleshooting:
+   ```bash
+   # SSH into the App Service
+   az webapp ssh --name your-app-name --resource-group your-rg
+   
+   # Run diagnostics
+   cd /home/site/wwwroot
+   python diagnose.py
+   ```
+   
+   This script will check:
+   - File presence and directory structure
+   - Environment variables (hiding sensitive values)
+   - Python imports and dependencies
+   - FastAPI app creation
+
+8. **General Timeout Issues**
    - Large deployments may take time
    - Check the Azure portal for deployment status
    - Increase timeout in script if needed
