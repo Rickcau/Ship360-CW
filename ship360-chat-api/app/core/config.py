@@ -21,23 +21,22 @@ class Settings(BaseSettings):
     AZURE_OPENAI_API_KEY: str
     AZURE_OPENAI_ENDPOINT: str
     AZURE_OPENAI_API_VERSION: str
-    AZURE_OPENAI_CHAT_DEPLOYMENT_NAME: str
-
-    # Ship 360 API Configuration
+    AZURE_OPENAI_CHAT_DEPLOYMENT_NAME: str    # Ship 360 API Configuration
     SP360_TOKEN_URL: str
     SP360_TOKEN_USERNAME: str
     SP360_TOKEN_PASSWORD: str
-
+    
     # Ship 360 APIs
     SP360_RATE_SHOP_URL: str
     SP360_SHIPMENTS_URL: str
+    SP360_TRACKING_URL: str
 
     # Semantic Kernel agent configurations
-    #MASTER_AGENT_DEPLOYMENT: str
-    #INTENT_AGENT_DEPLOYMENT: str
-    #RATE_AGENT_DEPLOYMENT: str
-    #LABEL_AGENT_DEPLOYMENT: str
-    #TRACKING_AGENT_DEPLOYMENT: str
+    MASTER_AGENT_DEPLOYMENT: str = "gpt-4"
+    INTENT_AGENT_DEPLOYMENT: str = "gpt-35-turbo"
+    RATE_AGENT_DEPLOYMENT: str = "gpt-35-turbo"
+    LABEL_AGENT_DEPLOYMENT: str = "gpt-35-turbo"
+    TRACKING_AGENT_DEPLOYMENT: str = "gpt-35-turbo"
     
     # Optional - Azure AI Search (uncomment if needed)
     # AZURE_SEARCH_SERVICE_ENDPOINT: Optional[str] = None
