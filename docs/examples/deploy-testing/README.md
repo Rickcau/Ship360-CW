@@ -398,14 +398,13 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
        ```
      
    - **Startup Script Issues**:
-     - The deployment includes two startup scripts:
-       - `startup_wrapper.py` - Main startup script (created during deployment)
-       - `startup.py` - Validation script (from source code)
-     - If either is missing, check the deployment logs
+     - The deployment uses the startup script:
+       - `startup.py` - Main startup and validation script (from source code)
+     - If it's missing, check that the source code was deployed correctly
      - You can manually test startup:
        ```bash
        # In SSH session:
-       python startup_wrapper.py
+       python startup.py
        ```
 
 7. **Diagnostic Tools**

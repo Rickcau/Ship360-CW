@@ -7,6 +7,7 @@ This script provides better error handling and logging for deployment issues.
 import os
 import sys
 import logging
+import subprocess
 from pathlib import Path
 
 # Configure logging
@@ -84,6 +85,50 @@ def check_dependencies():
     logger.info("✓ All required packages are available")
     return True
 
+def start_app():
+    """Start the FastAPI application with gunicorn"""
+    import subprocess
+    
+    # Get port from environment
+    port = os.environ.get('PORT', '8000')
+    logger.info(f"✅ Starting gunicorn on port {port}...")
+    
+    # Log environment variables (excluding sensitive ones)
+    logger.info("Environment variables:")
+    for key, value in sorted(os.environ.items()):
+        if any(sensitive in key.upper() for sensitive in ['PASSWORD', 'SECRET', 'KEY', 'TOKEN']):
+            logger.info(f"  {key}=***HIDDEN***")
+        else:
+            logger.info(f"  {key}={value}")
+    
+    # Use virtual environment python directly to ensure packages are found
+    venv_python = "/home/site/wwwroot/venv/bin/python"
+    if os.path.exists(venv_python):
+        python_cmd = venv_python
+        logger.info(f"✅ Using virtual environment Python: {python_cmd}")
+    else:
+        python_cmd = sys.executable
+        logger.info(f"⚠️ Virtual environment Python not found, using: {python_cmd}")
+    
+    # Start gunicorn with more conservative settings
+    cmd = [
+        python_cmd, "-m", "gunicorn",
+        "-w", "1",  # Single worker for debugging
+        "-k", "uvicorn.workers.UvicornWorker", 
+        "app.main:app",
+        f"--bind=0.0.0.0:{port}",
+        "--timeout", "300",
+        "--keep-alive", "2",
+        "--max-requests", "1000", 
+        "--max-requests-jitter", "50",
+        "--log-level", "info",
+        "--access-logfile", "-",
+        "--error-logfile", "-"
+    ]
+    
+    logger.info(f"Executing command: {' '.join(cmd)}")
+    os.execv(python_cmd, cmd)
+
 def main():
     """Main startup validation and app initialization."""
     logger.info("🚀 Starting Ship360 Chat API startup validation...")
@@ -128,8 +173,8 @@ def main():
     else:
         logger.warning("⚠️  Startup validation completed with warnings")
     
-    logger.info("Application startup will proceed...")
-    return 0  # Always return success for now to help with debugging
+    logger.info("Starting FastAPI application...")
+    start_app()
 
 if __name__ == "__main__":
     main()
