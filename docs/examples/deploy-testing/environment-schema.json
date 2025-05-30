@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ship360 Chat API Environment Variables",
+  "description": "Schema for validating Ship360 Chat API environment variables",
+  "type": "object",
+  "properties": {
+    "PROJECT_NAME": {
+      "type": "string",
+      "description": "Name of the FastAPI application"
+    },
+    "API_PREFIX": {
+      "type": "string",
+      "description": "Prefix for all API routes"
+    },
+    "DEBUG": {
+      "type": "string",
+      "enum": ["true", "false"],
+      "description": "Enable debug mode"
+    },
+    "ENVIRONMENT": {
+      "type": "string",
+      "enum": ["development", "test", "production"],
+      "description": "Deployment environment"
+    },
+    "LOG_LEVEL": {
+      "type": "string",
+      "enum": ["debug", "info", "warning", "error", "critical"],
+      "description": "Logging level"
+    },
+    "AZURE_OPENAI_API_KEY": {
+      "type": "string",
+      "description": "Azure OpenAI API key"
+    },
+    "AZURE_OPENAI_ENDPOINT": {
+      "type": "string",
+      "format": "uri",
+      "description": "Azure OpenAI service endpoint URL"
+    },
+    "AZURE_OPENAI_API_VERSION": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}(-preview)?$",
+      "description": "Azure OpenAI API version (YYYY-MM-DD format)"
+    },
+    "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME": {
+      "type": "string",
+      "description": "Azure OpenAI chat model deployment name"
+    },
+    "MASTER_AGENT_DEPLOYMENT": {
+      "type": "string",
+      "description": "Master agent deployment name"
+    },
+    "INTENT_AGENT_DEPLOYMENT": {
+      "type": "string",
+      "description": "Intent agent deployment name"
+    },
+    "RATE_AGENT_DEPLOYMENT": {
+      "type": "string",
+      "description": "Rate agent deployment name"
+    },
+    "LABEL_AGENT_DEPLOYMENT": {
+      "type": "string",
+      "description": "Label agent deployment name"
+    },
+    "TRACKING_AGENT_DEPLOYMENT": {
+      "type": "string",
+      "description": "Tracking agent deployment name"
+    },
+    "SP360_TOKEN_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 token service URL"
+    },
+    "SP360_TOKEN_USERNAME": {
+      "type": "string",
+      "description": "Ship360 API username"
+    },
+    "SP360_TOKEN_PASSWORD": {
+      "type": "string",
+      "description": "Ship360 API password"
+    },
+    "SP360_RATE_SHOP_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 rate shopping service URL"
+    },
+    "SP360_SHIPMENTS_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 shipments service URL"
+    },
+    "SP360_TRACKING_URL": {
+      "type": "string",
+      "format": "uri",
+      "description": "Ship360 tracking service URL"
+    }
+  },
+  "required": [
+    "PROJECT_NAME",
+    "AZURE_OPENAI_API_KEY",
+    "AZURE_OPENAI_ENDPOINT",
+    "AZURE_OPENAI_API_VERSION",
+    "AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"
+  ],
+  "additionalProperties": true
+}
