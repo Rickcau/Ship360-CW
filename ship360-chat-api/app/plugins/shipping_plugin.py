@@ -41,7 +41,7 @@ class ShippingPlugin:
 
         # Call the service's perform_rate_shop with the order object
         return await ship_360_service.perform_rate_shop(
-            order=order,
+            shipment_payload=order,
             max_price=max_price,
             duration_value=duration_value,
             duration_comparison_operator=duration_comparison_operator
