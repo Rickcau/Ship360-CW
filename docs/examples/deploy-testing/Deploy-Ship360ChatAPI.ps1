@@ -365,13 +365,16 @@ function Set-StartupCommand {
         }
         
         # Set startup command for FastAPI with gunicorn
-        # Use system Python - Azure App Service installs packages globally
+        # Use direct gunicorn command for most reliable startup
         if ($DebugMode) {
             # Debug version to see what's happening during startup
-            $startupCommand = "echo 'Python location:' && which python && echo 'Python version:' && python --version && echo 'Installed packages:' && pip list | grep -E '(uvicorn|gunicorn|fastapi)' && echo 'Starting app...' && python startup.py"
+            $startupCommand = "echo 'Python location:' && which python && echo 'Python version:' && python --version && echo 'Installed packages:' && pip list | grep -E '(uvicorn|gunicorn|fastapi)' && echo 'Testing app import:' && python debug_startup.py && echo 'Starting app with script...' && python startup.py"
             Write-ColorOutput "✓ Debug mode enabled - startup command will provide detailed diagnostics" "Yellow"
         } else {
-            $startupCommand = "python startup.py"
+            # Use the most direct and reliable startup method
+            # Azure App Service works best with simple, direct commands
+            $startupCommand = 'python -m gunicorn app.main:app -w 1 -k uvicorn.workers.UvicornWorker --bind=0.0.0.0:$PORT --timeout=120 --log-level=info --access-logfile=- --error-logfile=-'
+            Write-ColorOutput "✓ Using direct gunicorn startup command" "Green"
         }
         
         $configResult = az webapp config set `

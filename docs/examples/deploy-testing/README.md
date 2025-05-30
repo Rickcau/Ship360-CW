@@ -456,6 +456,23 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
    
    **Common startup issues:**
    
+   - **"Starting the site..." timeout (MOST COMMON)**: The deployment script shows repeated "Starting the site" warnings and never completes:
+     
+     **ROOT CAUSE**: The application container is failing to respond to HTTP health checks on port 8000.
+     
+     **SOLUTION**: Use the **direct gunicorn startup** method (latest fix):
+     ```bash
+     # The deployment now uses this startup command by default:
+     python -m gunicorn app.main:app -w 1 -k uvicorn.workers.UvicornWorker --bind=0.0.0.0:$PORT --timeout=120 --log-level=info --access-logfile=- --error-logfile=-
+     ```
+     
+     **DEBUG STEPS**:
+     1. Redeploy with debug mode: `.\Deploy-Ship360ChatAPI.ps1 -DebugMode`
+     2. Check container logs: Azure Portal > App Service > Log stream  
+     3. SSH into container: `az webapp ssh --name your-app-name --resource-group your-rg`
+     4. Run diagnostics: `cd /home/site/wwwroot && python debug_startup.py`
+     5. Test manual startup: `python -m uvicorn app.main:app --host 0.0.0.0 --port 8000`
+   
    - **Missing environment variables**: The app requires all environment variables listed in the .env file
      ```bash
      # Check current app settings
@@ -465,19 +482,19 @@ curl -X POST "https://your-app-name.azurewebsites.net/api/chat" \
    - **Import errors**: Missing Python packages or incorrect module paths
      - Check if all requirements are in `requirements.txt`
      - Verify the app structure matches the gunicorn command
+     - **IMPORTANT**: The application must successfully import `from app.main import app`
    
-   - **ModuleNotFoundError for uvicorn/gunicorn**: This issue occurs when Python packages are not found
-     - **FIXED in latest version**: The deployment script now uses system Python which should have packages installed globally
-     - The startup command is simplified to: `python startup.py`
-     - To debug: Use the debug mode: `.\Deploy-Ship360ChatAPI.ps1 -DebugMode` to see detailed startup diagnostics
-     - Alternative startup commands for troubleshooting:
-       ```bash
-       # Simple uvicorn (for testing)
-       python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
-       
-       # Direct gunicorn command
-       python -m gunicorn -w 1 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0:8000 --timeout 300
-       ```
+   - **Alternative startup methods** for troubleshooting:
+     ```bash
+     # Method 1: Simple uvicorn (for testing)
+     python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+     
+     # Method 2: Direct gunicorn (production)
+     python -m gunicorn -w 1 -k uvicorn.workers.UvicornWorker app.main:app --bind=0.0.0.0:8000 --timeout 120
+     
+     # Method 3: Using startup script (fallback methods included)
+     python startup.py
+     ```
    
    - **Port binding issues**: The app must use the PORT environment variable provided by Azure
      - The deployment script automatically sets PORT=8000
