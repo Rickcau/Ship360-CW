@@ -223,6 +223,11 @@ certificates/
 collections/**
 .cursorrules
 
+# Example environment files
+docs/examples/**/*.env
+docs/examples/**/appsettings.*.json
+docs/examples/deploy-testing/ship360.env
+
 # Large deployment files
 ship360-deploy.zip
 ship360-chat-api-deploy.zip

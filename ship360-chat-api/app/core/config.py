@@ -54,13 +54,33 @@ class Settings(BaseSettings):
         
     @model_validator(mode='after')
     def check_required_fields(self) -> 'Settings':
+        missing_fields = []
         for field_name, field in self.model_fields.items():
             if field.is_required() and getattr(self, field_name) is None:
-                raise ValueError(f"{field_name} environment variable is required")
+                missing_fields.append(field_name)
+        
+        if missing_fields:
+            error_msg = f"Missing required environment variables: {', '.join(missing_fields)}"
+            print(f"STARTUP ERROR: {error_msg}")
+            print("Please check your environment variables configuration.")
+            raise ValueError(error_msg)
         return self
 
 @lru_cache()
 def get_settings() -> Settings:
-    return Settings()
+    try:
+        return Settings()
+    except Exception as e:
+        print(f"CONFIGURATION ERROR: Failed to load settings - {e}")
+        print("Application cannot start without proper configuration.")
+        raise
 
-settings = get_settings()
+# Initialize settings with error handling
+settings = None
+try:
+    settings = get_settings()
+    print(f"✓ Configuration loaded successfully for {settings.PROJECT_NAME}")
+except Exception as e:
+    print(f"✗ Configuration failed: {e}")
+    # Re-raise to prevent app from starting with invalid config
+    raise
