@@ -75,11 +75,15 @@ def check_dependencies():
     for package in required_packages:
         try:
             __import__(package)
+            logger.info(f"✓ {package} is available")
         except ImportError:
             missing_packages.append(package)
+            logger.warning(f"✗ {package} is not available")
     
     if missing_packages:
         logger.error(f"Missing required packages: {', '.join(missing_packages)}")
+        logger.error("This likely indicates the virtual environment is not activated or packages are not installed.")
+        logger.error("In Azure App Service, packages should be installed globally during deployment.")
         return False
     
     logger.info("✓ All required packages are available")
@@ -91,7 +95,12 @@ def start_app():
     
     # Get port from environment
     port = os.environ.get('PORT', '8000')
-    logger.info(f"✅ Starting gunicorn on port {port}...")
+    logger.info(f"✅ Starting application on port {port}...")
+    
+    # Log Python and package information
+    logger.info(f"Python executable: {sys.executable}")
+    logger.info(f"Python version: {sys.version}")
+    logger.info(f"Python path: {sys.path}")
     
     # Log environment variables (excluding sensitive ones)
     logger.info("Environment variables:")
@@ -101,33 +110,52 @@ def start_app():
         else:
             logger.info(f"  {key}={value}")
     
-    # Use virtual environment python directly to ensure packages are found
-    venv_python = "/home/site/wwwroot/venv/bin/python"
-    if os.path.exists(venv_python):
-        python_cmd = venv_python
-        logger.info(f"✅ Using virtual environment Python: {python_cmd}")
-    else:
-        python_cmd = sys.executable
-        logger.info(f"⚠️ Virtual environment Python not found, using: {python_cmd}")
+    # Use system Python - Azure App Service should have packages installed globally
+    python_cmd = sys.executable
+    logger.info(f"✅ Using Python: {python_cmd}")
     
-    # Start gunicorn with more conservative settings
-    cmd = [
-        python_cmd, "-m", "gunicorn",
-        "-w", "1",  # Single worker for debugging
-        "-k", "uvicorn.workers.UvicornWorker", 
-        "app.main:app",
-        f"--bind=0.0.0.0:{port}",
-        "--timeout", "300",
-        "--keep-alive", "2",
-        "--max-requests", "1000", 
-        "--max-requests-jitter", "50",
-        "--log-level", "info",
-        "--access-logfile", "-",
-        "--error-logfile", "-"
-    ]
-    
-    logger.info(f"Executing command: {' '.join(cmd)}")
-    os.execv(python_cmd, cmd)
+    # Try gunicorn first (recommended for production)
+    try:
+        # Start gunicorn with conservative settings
+        cmd = [
+            python_cmd, "-m", "gunicorn",
+            "-w", "1",  # Single worker for debugging
+            "-k", "uvicorn.workers.UvicornWorker", 
+            "app.main:app",
+            f"--bind=0.0.0.0:{port}",
+            "--timeout", "300",
+            "--keep-alive", "2",
+            "--max-requests", "1000", 
+            "--max-requests-jitter", "50",
+            "--log-level", "info",
+            "--access-logfile", "-",
+            "--error-logfile", "-"
+        ]
+        
+        logger.info(f"Executing gunicorn command: {' '.join(cmd)}")
+        os.execv(python_cmd, cmd)
+        
+    except Exception as e:
+        logger.error(f"Failed to start with gunicorn: {e}")
+        logger.info("Trying fallback to uvicorn...")
+        
+        try:
+            # Fallback to uvicorn
+            cmd = [
+                python_cmd, "-m", "uvicorn",
+                "app.main:app",
+                "--host", "0.0.0.0",
+                "--port", port,
+                "--log-level", "info"
+            ]
+            
+            logger.info(f"Executing uvicorn command: {' '.join(cmd)}")
+            os.execv(python_cmd, cmd)
+            
+        except Exception as e2:
+            logger.error(f"Failed to start with uvicorn: {e2}")
+            logger.error("Both gunicorn and uvicorn startup attempts failed")
+            sys.exit(1)
 
 def main():
     """Main startup validation and app initialization."""
@@ -153,10 +181,10 @@ def main():
     if not env_valid:
         logger.warning("❌ Environment validation had issues, but continuing...")
     
-    # Check dependencies (more forgiving)
+    # Check dependencies (more forgiving for startup debugging)
     deps_valid = check_dependencies()
     if not deps_valid:
-        logger.warning("❌ Some dependencies may be missing, but continuing...")
+        logger.warning("❌ Some dependencies may be missing, but continuing startup for debugging...")
     
     # Try to import the app to check for import errors
     try:
@@ -164,9 +192,24 @@ def main():
         from app.main import app
         logger.info("✓ FastAPI application imported successfully")
     except Exception as e:
-        logger.warning(f"⚠️  Could not import FastAPI application: {e}")
-        logger.warning("This may indicate missing dependencies or configuration issues.")
-        logger.warning("Application startup will be attempted anyway for debugging...")
+        logger.error(f"⚠️  Could not import FastAPI application: {e}")
+        logger.error("This indicates missing dependencies or configuration issues.")
+        
+        # If we can't import the app, try to provide helpful information
+        try:
+            logger.error(f"Python path: {sys.path}")
+            logger.error("Attempting to show installed packages...")
+            result = subprocess.run([sys.executable, "-m", "pip", "list"], 
+                                  capture_output=True, text=True, timeout=30)
+            if result.returncode == 0:
+                logger.error(f"Installed packages:\n{result.stdout}")
+            else:
+                logger.error(f"Failed to get package list: {result.stderr}")
+        except Exception as debug_e:
+            logger.error(f"Could not gather debug information: {debug_e}")
+        
+        logger.error("Application startup will fail due to import errors.")
+        sys.exit(1)
     
     if env_valid and deps_valid:
         logger.info("✅ Startup validation completed successfully!")
